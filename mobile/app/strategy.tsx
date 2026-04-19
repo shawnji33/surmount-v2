@@ -468,15 +468,16 @@ export default function StrategyScreen() {
         {/* ── Your position ── */}
         <View style={s.section}>
           <T style={s.sectionTitle}>Your position</T>
-          <View style={s.whiteCard}>
-            {/* Shares + market value row */}
+          <View style={s.posCard}>
+            {/* Shares + value row */}
             <View style={s.posRow}>
               <T style={s.posSharesValue}>1,324.24 shares</T>
               <T style={s.posSharesValue}>$2,859.31</T>
             </View>
-            <View style={s.rowDiv} />
+            {/* Divider — full-width, no margin */}
+            <View style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.06)', alignSelf: 'stretch' }} />
             {/* Returns */}
-            <View style={{ gap: 10, paddingHorizontal: 0 }}>
+            <View style={{ gap: 10, alignSelf: 'stretch' }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <T style={s.posLabel}>Today's return</T>
                 <T style={[s.posLabel, { color: '#3b7e3f' }]}>$122.48 (+1.24%)</T>
@@ -486,10 +487,16 @@ export default function StrategyScreen() {
                 <T style={[s.posLabel, { color: '#3b7e3f' }]}>$567.23 (+21.56%)</T>
               </View>
             </View>
-            <View style={s.rowDiv} />
+            {/* Breakdown by accounts */}
             <SpringPressable style={s.breakdownRow} scaleTo={0.97}>
               <T style={s.breakdownTxt}>Breakdown by accounts</T>
-              <Img source={Icons.arrowRight} style={{ width: 14, height: 14, opacity: 0.45 }} contentFit="contain" />
+              <View style={{ width: 14, height: 14 }}>
+                {/* @ts-ignore */}
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ display: 'block' }}>
+                  {/* @ts-ignore */}
+                  <path d="M5.25 10.5L8.75 7L5.25 3.5" stroke="rgba(10,13,18,0.6)" strokeWidth="1.17" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </View>
             </SpringPressable>
           </View>
         </View>
@@ -743,17 +750,18 @@ const s = StyleSheet.create({
   metricValue: { fontSize: 12, color: 'rgba(10,13,18,0.9)', lineHeight: 18 },
 
   // ── Your position ──
+  posCard: {
+    backgroundColor: '#ffffff', borderRadius: 8,
+    borderWidth: 1, borderColor: 'rgba(0,0,0,0.09)',
+    overflow: 'hidden', padding: 16, gap: 12, alignItems: 'flex-end',
+  },
   posRow: {
-    flexDirection: 'row', justifyContent: 'space-between',
-    paddingHorizontal: 16, paddingVertical: 14,
+    flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'stretch',
+    height: 33, alignItems: 'center',
   },
   posSharesValue: { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
   posLabel: { fontSize: 12, color: 'rgba(10,13,18,0.7)', lineHeight: 18 },
-  posValue: { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
-  breakdownRow: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    paddingHorizontal: 16, paddingVertical: 14, gap: 6,
-  },
+  breakdownRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4 },
   breakdownTxt: { fontSize: 12, fontWeight: '500', color: 'rgba(10,13,18,0.6)', lineHeight: 18 },
 
   // ── Top holdings ──
