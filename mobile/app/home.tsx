@@ -768,8 +768,8 @@ const s = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: 2,
     alignSelf: 'stretch', paddingVertical: 4,
   },
-  // position: relative required so motion.div absolute child positions correctly
-  periodBtn: { flex: 1, alignItems: 'center', paddingVertical: 6, borderRadius: 12, position: 'relative' },
+  // flex:1 on wrapStyle (Animated.View); width:'100%' fills it on Pressable
+  periodBtn: { width: '100%', alignItems: 'center', paddingVertical: 6, borderRadius: 12, position: 'relative' },
   periodBtnActive: {},
   // zIndex 1 ensures text sits above the motion.div indicator layer
   periodTxt: { fontSize: 12, color: 'rgba(10,13,18,0.35)', lineHeight: 18, zIndex: 1, position: 'relative' },
@@ -796,7 +796,8 @@ const s = StyleSheet.create({
 
   // ── Holdings tabs ──
   tabRow: { flexDirection: 'row', gap: 4 },
-  tabBtn: { flex: 1, height: 36, alignItems: 'center', justifyContent: 'center', borderRadius: 8, position: 'relative' },
+  // flex:1 lives on wrapStyle (Animated.View); Pressable fills via width:'100%'
+  tabBtn: { width: '100%', height: 36, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 12, borderRadius: 8, position: 'relative', overflow: 'hidden' },
   tabBtnActive: {},
   tabTxt: { fontSize: 14, fontWeight: '500', color: '#717680', position: 'relative', zIndex: 1 },
   tabTxtActive: { color: '#414651' },
