@@ -274,14 +274,22 @@ function StrategyChart({ period }: { period: string }) {
 }
 
 // ─── Static data ───────────────────────────────────────────────────────────────
-const TIME_PERIODS = ['1D', '1W', '1M', '3M', '6M', 'YTD', '1Y', 'All'];
+const TIME_PERIODS = ['24H', '1W', '1M', '3M', '6M', 'YTD', '1Y', 'ALL'];
 
-const PERFORMANCE_STATS = [
-  { label: '1 Day',        value: '+$2.25',      pct: '+0.56%' },
-  { label: '1 Week',       value: '+$18.40',      pct: '+1.23%' },
-  { label: '1 Month',      value: '+$112.30',     pct: '+1.85%' },
-  { label: '6 Months',     value: '+$2,847.00',   pct: '+3.04%' },
-  { label: '1 Year',       value: '+$8,241.22',   pct: '+8.50%' },
+const METRICS_LEFT = [
+  { label: 'Asset Classes',  value: 'Equity'  },
+  { label: 'Annual Return',  value: '-2.33%'  },
+  { label: 'CAGR',           value: '-2.32%'  },
+  { label: 'Return Factor',  value: '0.89'    },
+  { label: 'Trades Per Day', value: '0.36'    },
+];
+
+const METRICS_RIGHT = [
+  { label: 'Calmar Ratio',       value: '-0.05'       },
+  { label: 'Standard Deviation', value: '1.95%'       },
+  { label: 'Alpha Capacity',     value: '$643,989.62' },
+  { label: 'Risk Score',         value: '2.69'        },
+  { label: 'Total Trades',       value: '298'         },
 ];
 
 const TOP_HOLDINGS = [
@@ -321,7 +329,7 @@ const BOTTOM_BAR_H = Platform.OS === 'ios' ? 96 : 84;
 // ─── Screen ───────────────────────────────────────────────────────────────────
 export default function StrategyScreen() {
   const router = useRouter();
-  const [period, setPeriod] = useState('1D');
+  const [period, setPeriod] = useState('24H');
 
   return (
     <View style={s.root}>
@@ -412,13 +420,10 @@ export default function StrategyScreen() {
           </View>
         </View>
 
-        {/* ── Portfolio value + chart + period bar ── */}
+        {/* ── Portfolio value + chart + period bar (full-bleed gray bg) ── */}
         <View style={s.chartSection}>
           <View style={s.valueBlock}>
-            <View style={{ flexDirection: 'row', alignItems: 'baseline' }}>
-              <Text style={s.valueMain}>$96,622</Text>
-              <Text style={s.valueCents}>.77</Text>
-            </View>
+            <Text style={s.valueFull}>$96,622.77</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
               <T style={s.valueGain}>+$2.25 (+0.56%)</T>
               <T style={s.valuePeriod}>Today</T>
@@ -442,20 +447,21 @@ export default function StrategyScreen() {
           </View>
         </View>
 
-        {/* ── Performance stats ── */}
-        <View style={s.section}>
-          <T style={s.sectionTitle}>Performance</T>
-          <View style={s.whiteCard}>
-            {PERFORMANCE_STATS.map((row, i) => (
-              <View key={row.label}>
-                <View style={s.statsRow}>
-                  <T style={s.statsLabel}>{row.label}</T>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                    <T style={[s.statsValue, { color: '#3b7e3f' }]}>{row.value}</T>
-                    <T style={[s.statsPct, { color: '#3b7e3f' }]}>{row.pct}</T>
-                  </View>
-                </View>
-                {i < PERFORMANCE_STATS.length - 1 && <View style={s.rowDiv} />}
+        {/* ── Metrics grid — 2-col plain text, no card border ── */}
+        <View style={{ flexDirection: 'row', gap: 20, marginTop: 32 }}>
+          <View style={{ flex: 1, gap: 12 }}>
+            {METRICS_LEFT.map(item => (
+              <View key={item.label} style={s.metricRow}>
+                <T style={s.metricLabel}>{item.label}</T>
+                <T style={s.metricValue}>{item.value}</T>
+              </View>
+            ))}
+          </View>
+          <View style={{ flex: 1, gap: 12 }}>
+            {METRICS_RIGHT.map(item => (
+              <View key={item.label} style={s.metricRow}>
+                <T style={s.metricLabel}>{item.label}</T>
+                <T style={s.metricValue}>{item.value}</T>
               </View>
             ))}
           </View>
@@ -681,16 +687,19 @@ const s = StyleSheet.create({
   pillLabel: { fontSize: 11, color: '#717680', lineHeight: 16 },
   pillValue: { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
 
-  // ── Value + chart section ──
-  chartSection: { marginTop: 24, alignItems: 'center', gap: 0 },
-  valueBlock:   { alignItems: 'center', gap: 4, marginBottom: 16 },
-  valueMain: {
-    fontFamily: 'Inter', fontSize: 28, fontWeight: '500',
-    color: 'rgba(10,13,18,0.9)', lineHeight: 36,
+  // ── Value + chart section — full-bleed gray background ──
+  chartSection: {
+    marginTop: 20,
+    marginHorizontal: -16,
+    paddingHorizontal: 16,
+    paddingTop: 20,
+    paddingBottom: 12,
+    backgroundColor: '#f5f4f2',
   },
-  valueCents: {
-    fontFamily: 'Inter', fontSize: 28, fontWeight: '500',
-    color: 'rgba(10,13,18,0.4)', lineHeight: 36,
+  valueBlock: { gap: 4, marginBottom: 12 },
+  valueFull: {
+    fontFamily: 'Inter', fontSize: 24, fontWeight: '500',
+    color: 'rgba(10,13,18,0.9)', lineHeight: 32,
   },
   valueGain:   { fontSize: 14, fontWeight: '500', color: '#3b7e3f', lineHeight: 20 },
   valuePeriod: { fontSize: 14, color: 'rgba(10,13,18,0.5)', lineHeight: 20 },
@@ -718,14 +727,10 @@ const s = StyleSheet.create({
   },
   rowDiv: { height: 1, backgroundColor: 'rgba(0,0,0,0.05)', marginHorizontal: 16 },
 
-  // ── Performance stats ──
-  statsRow: {
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    paddingHorizontal: 16, paddingVertical: 13,
-  },
-  statsLabel: { fontSize: 14, color: 'rgba(10,13,18,0.6)', lineHeight: 20 },
-  statsValue: { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
-  statsPct:   { fontSize: 12, color: '#535862', lineHeight: 18, width: 56, textAlign: 'right' },
+  // ── Metrics grid ──
+  metricRow:   { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  metricLabel: { fontSize: 12, color: 'rgba(10,13,18,0.6)', lineHeight: 18 },
+  metricValue: { fontSize: 12, color: 'rgba(10,13,18,0.9)', lineHeight: 18 },
 
   // ── Your position ──
   posRow: {
