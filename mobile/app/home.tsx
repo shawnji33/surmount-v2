@@ -292,17 +292,16 @@ function drawPortfolioChart(canvas: any, period: string, progress = 1) {
 }
 
 function PortfolioChart({ period }: { period: string }) {
-  const canvasRef  = useRef<any>(null);
-  const rafRef     = useRef<number | null>(null);
-  const fadeAnim   = useRef(new Animated.Value(0)).current;
+  const canvasRef = useRef<any>(null);
+  const rafRef    = useRef<number | null>(null);
 
   function animateDraw(p: string) {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    const duration = 550; // ms — ease-out cubic left-to-right reveal
+    const duration = 550;
     const t0 = performance.now();
     function frame() {
       const raw  = Math.min((performance.now() - t0) / duration, 1);
-      const ease = 1 - Math.pow(1 - raw, 3); // ease-out cubic
+      const ease = 1 - Math.pow(1 - raw, 3);
       if (canvasRef.current) drawPortfolioChart(canvasRef.current, p, ease);
       if (raw < 1) { rafRef.current = requestAnimationFrame(frame); }
       else { rafRef.current = null; }
@@ -312,23 +311,31 @@ function PortfolioChart({ period }: { period: string }) {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    // Fade out old chart (fast), draw new line left-to-right, fade in
-    Animated.timing(fadeAnim, { toValue: 0, duration: 90, useNativeDriver: true }).start(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    // Fade out instantly, draw new period left-to-right, fade back in — pure CSS, no RN Animated
+    canvas.style.transition = '';
+    canvas.style.opacity = '0';
+    const timer = setTimeout(() => {
       animateDraw(period);
-      Animated.timing(fadeAnim, { toValue: 1, duration: 180, useNativeDriver: true }).start();
-    });
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+      canvas.style.transition = 'opacity 0.18s ease-out';
+      canvas.style.opacity = '1';
+    }, 80);
+    return () => {
+      clearTimeout(timer);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, [period]);
 
   return (
-    <Animated.View style={{ alignSelf: 'stretch', marginHorizontal: -16, opacity: fadeAnim }}>
-      {/* @ts-ignore — width:100% fills the full-bleed Animated.View; offsetWidth read in drawPortfolioChart */}
+    <View style={{ alignSelf: 'stretch', marginHorizontal: -16 }}>
+      {/* @ts-ignore — width:100% fills the full-bleed container; offsetWidth read in drawPortfolioChart */}
       <canvas ref={canvasRef} height={237} style={{ display: 'block', width: '100%' }} />
       <View style={[
         { height: 1, alignSelf: 'stretch' },
         { backgroundImage: 'repeating-linear-gradient(to right, rgba(0,0,0,0.12) 0, rgba(0,0,0,0.12) 4px, transparent 4px, transparent 8px)' } as any,
       ]} />
-    </Animated.View>
+    </View>
   );
 }
 
