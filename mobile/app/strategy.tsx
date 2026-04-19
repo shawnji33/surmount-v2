@@ -31,6 +31,22 @@ const Avatars = {
   activityVisa:    u('avatars/activity-visa.png'),
 };
 
+const Logos = {
+  AAPL: u('logos/AAPL.webp'),
+  AMD:  u('logos/AMD.webp'),
+  AMZN: u('logos/AMZN.webp'),
+  GOOG: u('logos/GOOG.webp'),
+  MA:   u('logos/MA.webp'),
+  META: u('logos/META.webp'),
+  MSFT: u('logos/MSFT.webp'),
+  NFLX: u('logos/NFLX.webp'),
+  NVDA: u('logos/NVDA.webp'),
+  HOOD: u('logos/robinhood.png'),
+  TMUS: u('logos/TMUS.webp'),
+  TSLA: u('logos/TSLA.webp'),
+  V:    u('logos/V.webp'),
+} as const;
+
 const ShareCard = {
   bg:         u('share-cards/bg-quantum.png'),
   logoG0:     u('share-cards/logo-g0.png'),
@@ -109,7 +125,7 @@ function BackChevron() {
       {/* @ts-ignore */}
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ display: 'block' }}>
         {/* @ts-ignore */}
-        <path d="M12.5 15L7.5 10L12.5 5" stroke="#181D27" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M12.5 15L7.5 10L12.5 5" stroke="rgba(255,255,255,0.9)" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     </View>
   );
@@ -121,7 +137,7 @@ function ShareIcon() {
       {/* @ts-ignore */}
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ display: 'block' }}>
         {/* @ts-ignore */}
-        <path d="M10 2.5V13M10 2.5L6.5 6M10 2.5L13.5 6M4.5 12.5V15.5C4.5 16.052 4.948 16.5 5.5 16.5H14.5C15.052 16.5 15.5 16.052 15.5 15.5V12.5" stroke="#414651" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M10 2.5V13M10 2.5L6.5 6M10 2.5L13.5 6M4.5 12.5V15.5C4.5 16.052 4.948 16.5 5.5 16.5H14.5C15.052 16.5 15.5 16.052 15.5 15.5V12.5" stroke="rgba(255,255,255,0.9)" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
     </View>
   );
@@ -292,7 +308,7 @@ function StrategyChart({ period }: { period: string }) {
       <canvas ref={canvasRef} height={180} style={{ display: 'block', width: '100%' }} />
       <View style={[
         { height: 1, alignSelf: 'stretch' },
-        { backgroundImage: 'repeating-linear-gradient(to right, rgba(0,0,0,0.12) 0, rgba(0,0,0,0.12) 4px, transparent 4px, transparent 8px)' } as any,
+        { backgroundImage: 'repeating-linear-gradient(to right, rgba(255,255,255,0.15) 0, rgba(255,255,255,0.15) 4px, transparent 4px, transparent 8px)' } as any,
       ]} />
     </View>
   );
@@ -319,12 +335,12 @@ const METRICS_RIGHT = [
 
 const TOP_HOLDINGS_MAX_PCT = 25;
 const TOP_HOLDINGS = [
-  { ticker: 'GOOG', pct: 25, bg: 'rgba(255,191,8,0.20)', fill: 'rgba(255,191,8,0.40)', avatar: 'activityGoogl'   as const },
-  { ticker: 'HOOD', pct: 20, bg: 'rgba(204,255,0,0.20)', fill: 'rgba(204,255,0,0.40)', avatar: 'brokerRobinhood' as const },
-  { ticker: 'AMD',  pct: 14, bg: 'rgba(23,24,29,0.20)',  fill: 'rgba(15,16,20,0.40)',  avatar: null },
-  { ticker: 'COIN', pct: 12, bg: 'rgba(0,82,255,0.20)',  fill: 'rgba(0,82,255,0.40)',  avatar: null },
-  { ticker: 'TSLA', pct:  5, bg: 'rgba(234,32,39,0.20)', fill: 'rgba(232,33,39,0.40)', avatar: null },
-];
+  { ticker: 'GOOG', pct: 25, bg: 'rgba(255,191,8,0.20)', fill: 'rgba(255,191,8,0.40)' },
+  { ticker: 'HOOD', pct: 20, bg: 'rgba(204,255,0,0.20)', fill: 'rgba(204,255,0,0.40)' },
+  { ticker: 'AMD',  pct: 14, bg: 'rgba(23,24,29,0.20)',  fill: 'rgba(15,16,20,0.40)'  },
+  { ticker: 'TSLA', pct: 12, bg: 'rgba(234,32,39,0.20)', fill: 'rgba(232,33,39,0.40)' },
+  { ticker: 'NVDA', pct:  5, bg: 'rgba(118,185,0,0.20)', fill: 'rgba(118,185,0,0.40)' },
+] as const;
 
 // Bar widths match Figma pixel values (25 / flex / flex / 84 / 102 in 358px container)
 const INDUSTRIES = [
@@ -368,7 +384,7 @@ function UploadIcon() {
       {/* @ts-ignore */}
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ display: 'block' }}>
         {/* @ts-ignore */}
-        <path d="M10 2.5V13M10 2.5L6.5 6M10 2.5L13.5 6M4.5 12.5V15.5C4.5 16.052 4.948 16.5 5.5 16.5H14.5C15.052 16.5 15.5 16.052 15.5 15.5V12.5" stroke="#414651" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M10 2.5V13M10 2.5L6.5 6M10 2.5L13.5 6M4.5 12.5V15.5C4.5 16.052 4.948 16.5 5.5 16.5H14.5C15.052 16.5 15.5 16.052 15.5 15.5V12.5" stroke="rgba(255,255,255,0.9)" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
     </View>
   );
@@ -567,7 +583,11 @@ function ShareModal({ onDismiss }: { onDismiss: () => void }) {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        <TiltCard maxTilt={7} scaleOnHover={1.012} perspective={1100} trackDuration={120} resetDuration={600} shine parallaxDepth={0}>
+        <TiltCard
+          style={{ backgroundColor: 'transparent' } as any}
+          maxTilt={7} scaleOnHover={1.012} perspective={1100}
+          trackDuration={120} resetDuration={600} shine parallaxDepth={0}
+        >
           <ShareCardPreview take={take} />
         </TiltCard>
         <View style={sm.takeRow}>
@@ -655,12 +675,12 @@ export default function StrategyScreen() {
             </View>
             <View style={[s.pill, { flex: 1 }]}>
               <T style={s.pillLabel}>1-Year Return</T>
-              <T style={[s.pillValue, { color: '#3b7e3f' }]}>+8.50%</T>
+              <T style={[s.pillValue, { color: '#71b775' }]}>+8.50%</T>
             </View>
             <View style={[s.pill, { flex: 1 }]}>
               <T style={s.pillLabel}>Risk</T>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 2 }}>
-                <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: '#22c55e' }} />
+                <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: '#71b775' }} />
                 <T style={s.pillValue}>Low</T>
               </View>
             </View>
@@ -701,7 +721,7 @@ export default function StrategyScreen() {
                   // @ts-ignore
                   <motion.div
                     layoutId="strategy-period-indicator"
-                    style={{ position: 'absolute', inset: 0, borderRadius: 24, backgroundColor: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.10)' }}
+                    style={{ position: 'absolute', inset: 0, borderRadius: 24, backgroundColor: 'rgba(255,255,255,0.18)' }}
                     transition={{ type: 'spring', bounce: 0.18, duration: 0.38 }}
                   />
                 )}
@@ -741,16 +761,16 @@ export default function StrategyScreen() {
               <T style={s.posSharesValue}>$2,859.31</T>
             </View>
             {/* Divider — full-width, no margin */}
-            <View style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.06)', alignSelf: 'stretch' }} />
+            <View style={{ height: 1, backgroundColor: 'rgba(255,255,255,0.08)', alignSelf: 'stretch' }} />
             {/* Returns */}
             <View style={{ gap: 10, alignSelf: 'stretch' }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <T style={s.posLabel}>Today's return</T>
-                <T style={[s.posLabel, { color: '#3b7e3f' }]}>$122.48 (+1.24%)</T>
+                <T style={[s.posLabel, { color: '#71b775' }]}>$122.48 (+1.24%)</T>
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <T style={s.posLabel}>Total return</T>
-                <T style={[s.posLabel, { color: '#3b7e3f' }]}>$567.23 (+21.56%)</T>
+                <T style={[s.posLabel, { color: '#71b775' }]}>$567.23 (+21.56%)</T>
               </View>
             </View>
             {/* Breakdown by accounts */}
@@ -760,7 +780,7 @@ export default function StrategyScreen() {
                 {/* @ts-ignore */}
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ display: 'block' }}>
                   {/* @ts-ignore */}
-                  <path d="M5.25 10.5L8.75 7L5.25 3.5" stroke="rgba(10,13,18,0.6)" strokeWidth="1.17" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M5.25 10.5L8.75 7L5.25 3.5" stroke="rgba(255,255,255,0.5)" strokeWidth="1.17" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </View>
             </SpringPressable>
@@ -774,15 +794,13 @@ export default function StrategyScreen() {
             {TOP_HOLDINGS.map(h => (
               <SpringPressable key={h.ticker} scaleTo={0.98}>
                 <View style={[s.holdingRow, { backgroundColor: h.bg as any }]}>
-                  {/* Progress fill — left-rounded only */}
                   <View style={[s.holdingFill, {
                     width: `${(h.pct / TOP_HOLDINGS_MAX_PCT) * 32.1}%` as any,
                     backgroundColor: h.fill as any,
                   }]} />
-                  {/* Left: avatar + ticker */}
                   <View style={s.holdingLeft}>
-                    {h.avatar ? (
-                      <Img source={Avatars[h.avatar]} style={s.holdingAvatar} contentFit="cover" />
+                    {Logos[h.ticker as keyof typeof Logos] ? (
+                      <Img source={Logos[h.ticker as keyof typeof Logos]} style={s.holdingAvatar} contentFit="cover" />
                     ) : (
                       <View style={[s.holdingAvatar, s.holdingAvatarFallback]}>
                         <T style={s.holdingAvatarTxt}>{h.ticker[0]}</T>
@@ -790,7 +808,6 @@ export default function StrategyScreen() {
                     )}
                     <T style={s.holdingTicker}>{h.ticker}</T>
                   </View>
-                  {/* Right: allocation percentage */}
                   <T style={s.holdingPct}>{h.pct}%</T>
                 </View>
               </SpringPressable>
@@ -835,7 +852,7 @@ export default function StrategyScreen() {
                 {/* @ts-ignore */}
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ display: 'block' }}>
                   {/* @ts-ignore */}
-                  <path d="M6 12L10 8L6 4" stroke="rgba(10,13,18,0.6)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M6 12L10 8L6 4" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </View>
             </SpringPressable>
@@ -851,7 +868,7 @@ export default function StrategyScreen() {
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                       <T style={s.txTicker}>{tx.ticker}</T>
                       <View style={[s.txBadge, tx.positive ? s.txBadgeBuy : s.txBadgeSell]}>
-                        <T style={[s.txBadgeTxt, { color: tx.positive ? '#316434' : '#98443d' }]}>{tx.type}</T>
+                        <T style={[s.txBadgeTxt, { color: tx.positive ? '#71b775' : '#c87b74' }]}>{tx.type}</T>
                       </View>
                     </View>
                     <View style={{ alignItems: 'flex-end', gap: 2 }}>
@@ -898,23 +915,28 @@ export default function StrategyScreen() {
 
       </ScrollView>
 
-      {/* ── Fixed bottom trade bar ── */}
-      <View style={[s.tradeBar, { backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' } as any]}>
-        <SpringPressable
-          style={s.brokerSelector}
-          scaleTo={0.96}
-          wrapStyle={{ flex: 1 }}
-        >
-          <CircleAvatar source={Avatars.brokerRobinhood} size={28} />
-          <View style={{ flex: 1, gap: 1 }}>
-            <T style={s.brokerName}>Robinhood</T>
-            <T style={s.brokerValue}>$2,254.32 USD</T>
-          </View>
-          <Img source={Icons.caretDown} style={{ width: 16, height: 16, opacity: 0.5 }} contentFit="contain" />
-        </SpringPressable>
-        <SpringPressable style={s.tradeBtn} scaleTo={0.96}>
-          <T style={s.tradeBtnTxt}>Trade</T>
-        </SpringPressable>
+      {/* ── Fixed bottom trade bar — floating glass pill ── */}
+      <View style={s.tradeBar} pointerEvents="box-none">
+        <View style={[s.tradeBarPill, {
+          backdropFilter: 'blur(40px) saturate(120%)',
+          WebkitBackdropFilter: 'blur(40px) saturate(120%)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.36), inset 0 0 0 0.5px rgba(255,255,255,0.16)',
+        } as any]}>
+          <View style={{ ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(255,255,255,0.10)', borderRadius: 28 }} />
+          <View style={{ ...StyleSheet.absoluteFillObject, borderRadius: 28, backgroundImage: 'linear-gradient(315deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 55%)' } as any} />
+          <View style={{ ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(200,200,212,0.06)', mixBlendMode: 'color-burn', borderRadius: 28 } as any} />
+          <SpringPressable style={s.brokerSelector} scaleTo={0.96} wrapStyle={{ flex: 1 }}>
+            <CircleAvatar source={Logos.HOOD} size={28} />
+            <View style={{ flex: 1, gap: 1 }}>
+              <T style={s.brokerName}>Robinhood</T>
+              <T style={s.brokerValue}>$2,254.32 USD</T>
+            </View>
+            <Img source={Icons.caretDown} style={{ width: 16, height: 16, opacity: 0.5, filter: 'invert(1)' } as any} contentFit="contain" />
+          </SpringPressable>
+          <SpringPressable style={s.tradeBtn} scaleTo={0.96}>
+            <T style={s.tradeBtnTxt}>Trade</T>
+          </SpringPressable>
+        </View>
       </View>
 
       {showShare && <ShareModal onDismiss={() => setShowShare(false)} />}
@@ -923,21 +945,15 @@ export default function StrategyScreen() {
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
+// ─── Styles — night mode ──────────────────────────────────────────────────────
 const s = StyleSheet.create({
-  root:   { flex: 1, backgroundColor: '#fcfcfc' },
+  root:   { flex: 1, backgroundColor: '#0f1117' },
   scroll: { flex: 1 },
 
   // ── Header ──
-  header: {
-    position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100,
-    backgroundColor: 'transparent',
-  },
+  header: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, backgroundColor: 'transparent' },
   statusSpacer: { height: Platform.OS === 'ios' ? 56 : Platform.OS === 'web' ? 58 : 28 },
-  navBar: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingHorizontal: 16, paddingVertical: 10,
-  },
+  navBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 10 },
   navGlassBtn: {
     width: 40, height: 40, borderRadius: 100,
     backgroundColor: 'transparent',
@@ -946,151 +962,126 @@ const s = StyleSheet.create({
   },
 
   // ── Hero card ──
-  heroCard: {
-    height: 180, borderRadius: 8, overflow: 'hidden', position: 'relative',
-    borderWidth: 1, borderColor: 'rgba(0,0,0,0.08)',
-  },
-  heroContent: {
-    position: 'absolute', bottom: 0, left: 0, right: 0,
-    padding: 16, gap: 4,
-  },
-  heroTitle: { fontSize: 18, fontWeight: '500', color: '#ffffff', lineHeight: 24 },
+  heroCard: { height: 180, borderRadius: 8, overflow: 'hidden', position: 'relative', borderWidth: 1, borderColor: 'rgba(255,255,255,0.10)' },
+  heroContent: { position: 'absolute', bottom: 0, left: 0, right: 0, padding: 16, gap: 4 },
+  heroTitle: { fontSize: 20, fontWeight: '500', color: '#ffffff', lineHeight: 28 },
   heroDesc:  { fontSize: 12, color: 'rgba(255,255,255,0.70)', lineHeight: 18 },
 
   // ── Stats pills ──
   pillsGrid: { marginTop: 12, gap: 8 },
   pillsRow:  { flexDirection: 'row', gap: 8 },
   pill: {
-    backgroundColor: '#ffffff', borderRadius: 12,
-    borderWidth: 1, borderColor: 'rgba(0,0,0,0.07)',
+    backgroundColor: 'rgba(255,255,255,0.07)', borderRadius: 12,
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.09)',
     padding: 12, gap: 2,
   },
-  pillLabel: { fontSize: 12, color: '#717680', lineHeight: 18 },
-  pillValue: { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
+  pillLabel: { fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 18 },
+  pillValue: { fontSize: 14, fontWeight: '500', color: 'rgba(255,255,255,0.9)', lineHeight: 20 },
 
-  // ── Value + chart section — full-bleed gray background ──
-  chartSection: {
-    marginTop: 20,
-    paddingTop: 20,
-    paddingBottom: 12,
-  },
+  // ── Value + chart section ──
+  chartSection: { marginTop: 20, paddingTop: 20, paddingBottom: 12 },
   valueBlock: { gap: 4, marginBottom: 20 },
-  valueFull: {
-    fontFamily: 'Inter', fontSize: 24, fontWeight: '500',
-    color: 'rgba(10,13,18,0.9)', lineHeight: 32,
-  },
-  valueGain:   { fontSize: 14, fontWeight: '500', color: '#3b7e3f', lineHeight: 20 },
-  valuePeriod: { fontSize: 14, color: 'rgba(10,13,18,0.5)', lineHeight: 20 },
+  valueFull: { fontFamily: 'Inter', fontSize: 24, fontWeight: '500', color: 'rgba(255,255,255,0.9)', lineHeight: 32 },
+  valueGain:   { fontSize: 14, fontWeight: '500', color: '#71b775', lineHeight: 20 },
+  valuePeriod: { fontSize: 14, color: 'rgba(255,255,255,0.40)', lineHeight: 20 },
 
-  // ── Period bar (same as home.tsx) ──
+  // ── Period bar ──
   periodBar: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
     alignSelf: 'stretch', padding: 4,
-    backgroundColor: 'rgba(47,48,50,0.05)',
+    backgroundColor: 'rgba(255,255,255,0.07)',
     borderRadius: 24, marginTop: 8,
   },
   periodBtn: { width: '100%', alignItems: 'center', paddingVertical: 4, borderRadius: 24, position: 'relative' },
-  periodTxt: { fontSize: 12, color: '#615e5c', lineHeight: 18, zIndex: 1, position: 'relative' },
-  periodTxtActive: { fontSize: 12, fontWeight: '500', color: '#32302f', lineHeight: 18 },
+  periodTxt: { fontSize: 12, color: 'rgba(255,255,255,0.38)', lineHeight: 18, zIndex: 1, position: 'relative' },
+  periodTxtActive: { fontSize: 12, fontWeight: '500', color: 'rgba(255,255,255,0.9)', lineHeight: 18 },
 
   // ── Sections ──
   section:      { marginTop: 24, gap: 16 },
-  sectionTitle: { fontSize: 18, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 28 },
+  sectionTitle: { fontSize: 20, fontWeight: '500', color: 'rgba(255,255,255,0.9)', lineHeight: 28 },
 
-  // ── White card container ──
-  whiteCard: {
-    backgroundColor: '#ffffff', borderRadius: 12,
-    borderWidth: 1, borderColor: 'rgba(0,0,0,0.07)',
-    overflow: 'hidden',
-  },
-  rowDiv: { height: 1, backgroundColor: 'rgba(0,0,0,0.05)', marginHorizontal: 16 },
+  // ── Card container ──
+  whiteCard: { backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)', overflow: 'hidden' },
+  rowDiv:    { height: 1, backgroundColor: 'rgba(255,255,255,0.07)', marginHorizontal: 16 },
 
   // ── Metrics grid ──
   metricRow:   { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  metricLabel: { fontSize: 12, color: 'rgba(10,13,18,0.6)', lineHeight: 18 },
-  metricValue: { fontSize: 12, color: 'rgba(10,13,18,0.9)', lineHeight: 18 },
+  metricLabel: { fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 18 },
+  metricValue: { fontSize: 12, color: 'rgba(255,255,255,0.85)', lineHeight: 18 },
 
   // ── Your position ──
   posCard: {
-    backgroundColor: '#ffffff', borderRadius: 8,
-    borderWidth: 1, borderColor: 'rgba(0,0,0,0.09)',
+    backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: 8,
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
     overflow: 'hidden', padding: 16, gap: 12, alignItems: 'flex-end',
   },
-  posRow: {
-    flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'stretch',
-    height: 33, alignItems: 'center',
-  },
-  posSharesValue: { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
-  posLabel: { fontSize: 12, color: 'rgba(10,13,18,0.7)', lineHeight: 18 },
+  posRow: { flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'stretch', height: 33, alignItems: 'center' },
+  posSharesValue: { fontSize: 14, fontWeight: '500', color: 'rgba(255,255,255,0.9)', lineHeight: 20 },
+  posLabel: { fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 18 },
   breakdownRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4 },
-  breakdownTxt: { fontSize: 12, fontWeight: '500', color: 'rgba(10,13,18,0.6)', lineHeight: 18 },
+  breakdownTxt: { fontSize: 12, fontWeight: '500', color: 'rgba(255,255,255,0.50)', lineHeight: 18 },
 
-  // ── Top holdings (progress-bar rows) ──
-  holdingRow:          { height: 40, borderRadius: 8, position: 'relative', overflow: 'hidden' },
-  holdingFill:         { position: 'absolute', left: 0, top: 0, bottom: 0, borderTopLeftRadius: 8, borderBottomLeftRadius: 8 },
-  holdingLeft:         { position: 'absolute', left: 12, top: 8, bottom: 8, flexDirection: 'row', alignItems: 'center', gap: 8 },
-  holdingAvatar:       { width: 24, height: 24, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(10,13,18,0.10)' },
-  holdingAvatarFallback:{ alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.12)' },
-  holdingAvatarTxt:    { fontSize: 10, fontWeight: '500', color: 'rgba(10,13,18,0.8)' },
-  holdingTicker:       { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
-  holdingPct:          { position: 'absolute', right: 12, top: 0, bottom: 0, textAlignVertical: 'center', fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.8)', lineHeight: 40 },
+  // ── Top holdings ──
+  holdingRow:           { height: 40, borderRadius: 8, position: 'relative', overflow: 'hidden' },
+  holdingFill:          { position: 'absolute', left: 0, top: 0, bottom: 0, borderTopLeftRadius: 8, borderBottomLeftRadius: 8 },
+  holdingLeft:          { position: 'absolute', left: 12, top: 8, bottom: 8, flexDirection: 'row', alignItems: 'center', gap: 8 },
+  holdingAvatar:        { width: 24, height: 24, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)' },
+  holdingAvatarFallback:{ alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.10)' },
+  holdingAvatarTxt:     { fontSize: 8, fontWeight: '500', color: 'rgba(255,255,255,0.8)' },
+  holdingTicker:        { fontSize: 14, fontWeight: '500', color: 'rgba(255,255,255,0.9)', lineHeight: 20 },
+  holdingPct:           { position: 'absolute', right: 12, top: 0, bottom: 0, textAlignVertical: 'center', fontSize: 14, fontWeight: '500', color: 'rgba(255,255,255,0.75)', lineHeight: 40 },
 
   // ── Industries ──
-  colorBar:    { flexDirection: 'row', height: 16, borderRadius: 8, overflow: 'hidden', backgroundColor: '#e0e6ed' },
+  colorBar:    { flexDirection: 'row', height: 16, borderRadius: 8, overflow: 'hidden', backgroundColor: 'rgba(255,255,255,0.10)' },
   colorBarSeg: { height: 16 },
   legendRow:   { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 6 },
-  legendSwatch:{ width: 8, height: 16, borderRadius: 6, borderWidth: 0.67, borderColor: 'rgba(10,13,18,0.20)' },
-  legendName:  { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.7)', lineHeight: 20 },
-  legendPct:   { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.7)', lineHeight: 20 },
+  legendSwatch:{ width: 8, height: 16, borderRadius: 6, borderWidth: 0.67, borderColor: 'rgba(255,255,255,0.15)' },
+  legendName:  { fontSize: 14, fontWeight: '500', color: 'rgba(255,255,255,0.65)', lineHeight: 20 },
+  legendPct:   { fontSize: 14, fontWeight: '500', color: 'rgba(255,255,255,0.65)', lineHeight: 20 },
 
   // ── Recent transactions ──
-  txCircle:   { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center', flexShrink: 0, borderWidth: 0.5, borderColor: 'rgba(0,0,0,0.08)' },
-  txInitial:  { fontSize: 10, fontWeight: '500' },
-  txTicker:   { fontSize: 14, fontWeight: '500', color: '#414651', lineHeight: 20 },
-  txDate:     { fontSize: 12, color: 'rgba(10,13,18,0.6)', lineHeight: 18 },
+  txCircle:   { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center', flexShrink: 0, borderWidth: 0.5, borderColor: 'rgba(255,255,255,0.12)' },
+  txInitial:  { fontSize: 8, fontWeight: '500' },
+  txTicker:   { fontSize: 14, fontWeight: '500', color: 'rgba(255,255,255,0.9)', lineHeight: 20 },
+  txDate:     { fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 18 },
   txBadge:    { paddingHorizontal: 8, paddingVertical: 2, borderRadius: 9999, borderWidth: 1 },
-  txBadgeBuy: { backgroundColor: '#eef7ee', borderColor: '#cbe7cc' },
-  txBadgeSell:{ backgroundColor: '#fbf5f5', borderColor: '#f3d7d5' },
+  txBadgeBuy: { backgroundColor: 'rgba(113,183,117,0.12)', borderColor: 'rgba(113,183,117,0.28)' },
+  txBadgeSell:{ backgroundColor: 'rgba(200,123,116,0.12)', borderColor: 'rgba(200,123,116,0.28)' },
   txBadgeTxt: { fontSize: 12, fontWeight: '500' },
-  txPct:      { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
-  showMoreTxt:{ fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.6)', lineHeight: 20 },
+  txPct:      { fontSize: 14, fontWeight: '500', color: 'rgba(255,255,255,0.85)', lineHeight: 20 },
+  showMoreTxt:{ fontSize: 14, fontWeight: '500', color: 'rgba(255,255,255,0.50)', lineHeight: 20 },
 
   // ── Similar strategies ──
-  similarCard: {
-    width: 240, height: 100, borderRadius: 8, overflow: 'hidden', position: 'relative',
-    borderWidth: 1, borderColor: 'rgba(0,0,0,0.09)',
-  },
-  similarContent: {
-    position: 'absolute', top: 0, bottom: 0, left: 16, right: 16,
-    justifyContent: 'center', gap: 8,
-  },
+  similarCard: { width: 240, height: 100, borderRadius: 8, overflow: 'hidden', position: 'relative', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' },
+  similarContent: { position: 'absolute', top: 0, bottom: 0, left: 16, right: 16, justifyContent: 'center', gap: 8 },
   similarTitle:  { fontSize: 12, fontWeight: '500', color: '#ffffff', lineHeight: 18 },
   similarReturn: { fontSize: 12, fontWeight: '500', color: '#72be7c', lineHeight: 18 },
-  similarPeriod: { fontSize: 12, color: '#d5d7da', lineHeight: 18 },
+  similarPeriod: { fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 18 },
 
-  // ── Trade bar ──
+  // ── Trade bar — floating glass pill ──
   tradeBar: {
     position: 'absolute', bottom: 0, left: 0, right: 0,
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-    paddingHorizontal: 16, paddingTop: 12,
+    paddingHorizontal: 16, paddingTop: 8,
     paddingBottom: Platform.OS === 'ios' ? 28 : 16,
-    backgroundColor: 'rgba(255,255,255,0.90)',
-    borderTopWidth: 1, borderTopColor: 'rgba(0,0,0,0.07)',
+    backgroundColor: 'transparent',
+  },
+  tradeBarPill: {
+    flexDirection: 'row', alignItems: 'center', gap: 8,
+    borderRadius: 28, paddingHorizontal: 8, paddingVertical: 8,
+    overflow: 'hidden', position: 'relative',
   },
   brokerSelector: {
     flexDirection: 'row', alignItems: 'center', gap: 10,
-    backgroundColor: '#f5f5f5', borderRadius: 12,
-    borderWidth: 1, borderColor: 'rgba(0,0,0,0.07)',
-    paddingHorizontal: 12, paddingVertical: 8,
+    borderRadius: 20, paddingHorizontal: 12, paddingVertical: 10,
   },
-  brokerName:  { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
-  brokerValue: { fontSize: 12, color: '#717680', lineHeight: 18 },
+  brokerName:  { fontSize: 14, fontWeight: '500', color: 'rgba(255,255,255,0.9)', lineHeight: 20 },
+  brokerValue: { fontSize: 12, color: 'rgba(255,255,255,0.50)', lineHeight: 18 },
   tradeBtn: {
-    backgroundColor: '#0a0d12', borderRadius: 12,
-    paddingHorizontal: 24, paddingVertical: 14,
+    backgroundColor: '#ffffff', borderRadius: 20,
+    paddingHorizontal: 20, paddingVertical: 12,
     alignItems: 'center', justifyContent: 'center',
   },
-  tradeBtnTxt: { fontSize: 16, fontWeight: '500', color: '#ffffff' },
+  tradeBtnTxt: { fontSize: 16, fontWeight: '500', color: '#0a0d12' },
 });
 
 // ─── Share modal styles ───────────────────────────────────────────────────────
