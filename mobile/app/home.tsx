@@ -6,8 +6,8 @@ import {
   Pressable,
   StyleSheet,
   Platform,
+  type ViewStyle,
 } from 'react-native';
-import { Image } from 'expo-image';
 import { colors, spacing, radius, fontSize, fontWeight, lineHeight } from '../constants/tokens';
 
 // ─── Assets via public/ static directory ──────────────────────────────────────
@@ -59,6 +59,37 @@ const Avatars = {
   activityVisa:      u('avatars/activity-visa.png'),
   activityGoogl:     u('avatars/activity-googl.png'),
 };
+
+// ─── Img primitive ────────────────────────────────────────────────────────────
+// React Native Web's <Image> uses CSS background-image via computed atomic CSS
+// classes. In Expo's static SSR export those classes render with empty URLs.
+// Using View + backgroundImage inline style instead — inline styles ARE emitted
+// into the SSR HTML immediately, so images appear without waiting for JS.
+
+type ImgProps = {
+  source: { uri: string };
+  style?: ViewStyle | ViewStyle[] | any;
+  contentFit?: 'cover' | 'contain' | 'fill';
+};
+
+function Img({ source, style, contentFit = 'cover' }: ImgProps) {
+  const bsMap = { cover: 'cover', contain: 'contain', fill: '100% 100%' };
+  return (
+    <View
+      style={[
+        style,
+        // @ts-ignore — React Native Web passes unknown CSS props through to the DOM
+        {
+          backgroundImage: `url('${source.uri}')`,
+          backgroundSize: bsMap[contentFit],
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          overflow: 'hidden',
+        },
+      ]}
+    />
+  );
+}
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -121,7 +152,7 @@ function Divider({ indent = true }: { indent?: boolean }) {
 
 function CircleAvatar({ source, size = 32 }: { source: any; size?: number }) {
   return (
-    <Image
+    <Img
       source={source}
       style={{ width: size, height: size, borderRadius: size / 2, borderWidth: size > 20 ? 0.75 : 0.5, borderColor: 'rgba(0,0,0,0.08)' }}
       contentFit="cover"
@@ -134,7 +165,7 @@ function AvatarStack({ sources }: { sources: any[] }) {
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       {sources.slice(0, 3).map((src, i) => (
         <View key={i} style={{ marginLeft: i > 0 ? -4 : 0, zIndex: 3 - i }}>
-          <Image source={src} style={{ width: 16, height: 16, borderRadius: 8, borderWidth: 0.5, borderColor: 'rgba(0,0,0,0.08)' }} contentFit="cover" />
+          <Img source={src} style={{ width: 16, height: 16, borderRadius: 8, borderWidth: 0.5, borderColor: 'rgba(0,0,0,0.08)' }} contentFit="cover" />
         </View>
       ))}
     </View>
@@ -144,7 +175,7 @@ function AvatarStack({ sources }: { sources: any[] }) {
 function BadgePill({ icon, label }: { icon?: any; label: string }) {
   return (
     <View style={s.badge}>
-      {icon && <Image source={icon} style={{ width: 12, height: 12 }} contentFit="contain" />}
+      {icon && <Img source={icon} style={{ width: 12, height: 12 }} contentFit="contain" />}
       <T style={s.badgeTxt}>{label}</T>
     </View>
   );
@@ -182,9 +213,9 @@ export default function HomeScreen() {
 
           {/* Surmount Pro badge */}
           <View style={s.proPill}>
-            <Image source={Images.proBadgeBg} style={StyleSheet.absoluteFillObject} contentFit="cover" />
+            <Img source={Images.proBadgeBg} style={StyleSheet.absoluteFillObject} contentFit="cover" />
             <View style={s.proGearWrap}>
-              <Image source={Images.proBadgeGear} style={StyleSheet.absoluteFillObject} contentFit="contain" />
+              <Img source={Images.proBadgeGear} style={StyleSheet.absoluteFillObject} contentFit="contain" />
             </View>
             <T style={s.proLabel}>Surmount Pro</T>
           </View>
@@ -192,7 +223,7 @@ export default function HomeScreen() {
           {/* Portfolio value */}
           <View style={s.valueWrap}>
             <View style={s.portfolioValueRow}>
-              <Image source={Images.portfolioValueBg} style={StyleSheet.absoluteFillObject} contentFit="cover" />
+              <Img source={Images.portfolioValueBg} style={StyleSheet.absoluteFillObject} contentFit="cover" />
               <Text style={s.portfolioValue}>$2,234,678.92</Text>
             </View>
             <T style={s.portfolioGain}>+$633.63 (+2.42%) this week</T>
@@ -200,8 +231,8 @@ export default function HomeScreen() {
 
           {/* Chart — full width 390×237 */}
           <View style={s.chart}>
-            <Image source={Images.chartFill} style={[StyleSheet.absoluteFillObject, { width: '100%', height: '100%' }]} contentFit="fill" />
-            <Image source={Images.chartLine} style={[StyleSheet.absoluteFillObject, { width: '100%', height: '100%' }]} contentFit="fill" />
+            <Img source={Images.chartFill} style={[StyleSheet.absoluteFillObject, { width: '100%', height: '100%' }]} contentFit="fill" />
+            <Img source={Images.chartLine} style={[StyleSheet.absoluteFillObject, { width: '100%', height: '100%' }]} contentFit="fill" />
           </View>
 
           {/* Period selector */}
@@ -217,11 +248,11 @@ export default function HomeScreen() {
         {/* ── Quick actions ── */}
         <View style={s.quickRow}>
           <Pressable style={s.quickCard}>
-            <Image source={Icons.plus} style={s.quickIcon} contentFit="contain" />
+            <Img source={Icons.plus} style={s.quickIcon} contentFit="contain" />
             <T style={s.quickLabel}>Connect accounts</T>
           </Pressable>
           <Pressable style={s.quickCard}>
-            <Image source={Icons.building} style={s.quickIcon} contentFit="contain" />
+            <Img source={Icons.building} style={s.quickIcon} contentFit="contain" />
             <T style={s.quickLabel}>Invest in strategies</T>
           </Pressable>
         </View>
@@ -232,7 +263,7 @@ export default function HomeScreen() {
           <View style={s.sectionHead}>
             <T style={s.sectionTitle}>Holdings</T>
             <View style={{ transform: [{ rotate: '-90deg' }] }}>
-              <Image source={Icons.arrowNarrow} style={{ width: 20, height: 20 }} contentFit="contain" />
+              <Img source={Icons.arrowNarrow} style={{ width: 20, height: 20 }} contentFit="contain" />
             </View>
           </View>
 
@@ -274,7 +305,7 @@ export default function HomeScreen() {
               <View style={s.listRow}>
                 {item.isSystem ? (
                   <View style={s.systemCircle}>
-                    <Image source={item.icon} style={{ width: 16, height: 16 }} contentFit="contain" />
+                    <Img source={item.icon} style={{ width: 16, height: 16 }} contentFit="contain" />
                   </View>
                 ) : (
                   <CircleAvatar source={item.avatar} size={32} />
@@ -334,7 +365,7 @@ export default function HomeScreen() {
                   <BadgePill label="Risk level: 2/5" />
                 </View>
               </View>
-              <Image source={Images.cardEtf} style={s.cardImg} contentFit="contain" />
+              <Img source={Images.cardEtf} style={s.cardImg} contentFit="contain" />
             </View>
 
             {/* Direct indexing */}
@@ -347,7 +378,7 @@ export default function HomeScreen() {
                   <BadgePill label="Risk level: 4/5" />
                 </View>
               </View>
-              <Image source={Images.cardDirectIdx} style={s.cardImg} contentFit="contain" />
+              <Img source={Images.cardDirectIdx} style={s.cardImg} contentFit="contain" />
             </View>
 
             {/* Referral */}
@@ -356,7 +387,7 @@ export default function HomeScreen() {
                 <T style={s.cardTitle}>Earn up to $10,000 USD for referral</T>
                 <T style={s.cardDesc}>Join our referral program to earn up to $10,000 by inviting friends!</T>
               </View>
-              <Image source={Images.cardReferral} style={s.cardImgReferral} contentFit="contain" />
+              <Img source={Images.cardReferral} style={s.cardImgReferral} contentFit="contain" />
             </View>
           </ScrollView>
         </View>
@@ -376,23 +407,23 @@ export default function HomeScreen() {
             <View style={s.pillGradient} />
             <CircleAvatar source={Avatars.user} size={20} />
             <T style={s.pillTxt}>All Portfolios</T>
-            <Image source={Icons.chevronDown} style={s.pillChevron} contentFit="contain" />
+            <Img source={Icons.chevronDown} style={s.pillChevron} contentFit="contain" />
           </Pressable>
 
           {/* Action icons */}
           <View style={s.navIcons}>
             <Pressable style={s.iconBtn}>
-              <Image source={Icons.gift} style={s.navIcon} contentFit="contain" />
+              <Img source={Icons.gift} style={s.navIcon} contentFit="contain" />
             </Pressable>
             <Pressable style={s.iconBtn}>
-              <Image source={Icons.bell} style={s.navIcon} contentFit="contain" />
+              <Img source={Icons.bell} style={s.navIcon} contentFit="contain" />
               {/* Notification dot */}
               <View style={s.notifDot}>
-                <Image source={Icons.dot} style={{ width: 6, height: 6 }} contentFit="contain" />
+                <Img source={Icons.dot} style={{ width: 6, height: 6 }} contentFit="contain" />
               </View>
             </Pressable>
             <Pressable style={s.iconBtn}>
-              <Image source={Icons.settings} style={s.navIcon} contentFit="contain" />
+              <Img source={Icons.settings} style={s.navIcon} contentFit="contain" />
             </Pressable>
           </View>
         </View>
