@@ -194,7 +194,8 @@ function getMockData(period: string) {
   return out;
 }
 
-function drawPortfolioChart(canvas: any, period: string) {
+// progress 0→1: clip-rect reveals chart left-to-right (ease-out cubic)
+function drawPortfolioChart(canvas: any, period: string, progress = 1) {
   const W = 390, H = 237;
   const dpr = window.devicePixelRatio || 1;
   canvas.width = W * dpr;
@@ -206,6 +207,14 @@ function drawPortfolioChart(canvas: any, period: string) {
   if (!ctx) return;
   ctx.scale(dpr, dpr);
   ctx.clearRect(0, 0, W, H);
+
+  // Clip everything to the revealed portion (progress 0→1 = left→right)
+  if (progress < 1) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, W * progress + 3, H); // +3 keeps line cap from being clipped
+    ctx.clip();
+  }
 
   const data = getMockData(period);
   const vals = data.map((d: any) => d.value);
@@ -266,37 +275,58 @@ function drawPortfolioChart(canvas: any, period: string) {
   ctx.lineCap = 'round';
   ctx.stroke();
 
-  // Last-point dot: green halo → white ring → green center
-  const lx = pts[pts.length - 1].x, ly = pts[pts.length - 1].y;
-  ctx.beginPath(); ctx.arc(lx, ly, 6, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(45,110,49,0.20)'; ctx.fill();
-  ctx.beginPath(); ctx.arc(lx, ly, 3.5, 0, Math.PI * 2);
-  ctx.fillStyle = '#ffffff'; ctx.fill();
-  ctx.beginPath(); ctx.arc(lx, ly, 2, 0, Math.PI * 2);
-  ctx.fillStyle = '#2d6e31'; ctx.fill();
+  // Last-point dot: only after line is fully drawn
+  if (progress >= 0.98) {
+    const lx = pts[pts.length - 1].x, ly = pts[pts.length - 1].y;
+    ctx.beginPath(); ctx.arc(lx, ly, 6, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(45,110,49,0.20)'; ctx.fill();
+    ctx.beginPath(); ctx.arc(lx, ly, 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffffff'; ctx.fill();
+    ctx.beginPath(); ctx.arc(lx, ly, 2, 0, Math.PI * 2);
+    ctx.fillStyle = '#2d6e31'; ctx.fill();
+  }
+
+  if (progress < 1) ctx.restore(); // remove clip
 }
 
 function PortfolioChart({ period }: { period: string }) {
-  const canvasRef = useRef<any>(null);
+  const canvasRef  = useRef<any>(null);
+  const rafRef     = useRef<number | null>(null);
+  const fadeAnim   = useRef(new Animated.Value(0)).current;
+
+  function animateDraw(p: string) {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    const duration = 550; // ms — ease-out cubic left-to-right reveal
+    const t0 = performance.now();
+    function frame() {
+      const raw  = Math.min((performance.now() - t0) / duration, 1);
+      const ease = 1 - Math.pow(1 - raw, 3); // ease-out cubic
+      if (canvasRef.current) drawPortfolioChart(canvasRef.current, p, ease);
+      if (raw < 1) { rafRef.current = requestAnimationFrame(frame); }
+      else { rafRef.current = null; }
+    }
+    rafRef.current = requestAnimationFrame(frame);
+  }
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const raf = requestAnimationFrame(() => {
-      if (canvasRef.current) drawPortfolioChart(canvasRef.current, period);
+    // Fade out old chart (fast), draw new line left-to-right, fade in
+    Animated.timing(fadeAnim, { toValue: 0, duration: 90, useNativeDriver: true }).start(() => {
+      animateDraw(period);
+      Animated.timing(fadeAnim, { toValue: 1, duration: 180, useNativeDriver: true }).start();
     });
-    return () => cancelAnimationFrame(raf);
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, [period]);
 
   return (
-    <View style={{ alignSelf: 'stretch', marginHorizontal: -16 }}>
+    <Animated.View style={{ alignSelf: 'stretch', marginHorizontal: -16, opacity: fadeAnim }}>
       {/* @ts-ignore */}
       <canvas ref={canvasRef} width={390} height={237} style={{ display: 'block' }} />
-      {/* Dashed separator between chart and period selector */}
       <View style={[
         { height: 1, alignSelf: 'stretch' },
         { backgroundImage: 'repeating-linear-gradient(to right, rgba(0,0,0,0.12) 0, rgba(0,0,0,0.12) 4px, transparent 4px, transparent 8px)' } as any,
       ]} />
-    </View>
+    </Animated.View>
   );
 }
 
