@@ -113,6 +113,17 @@ function ShareIcon() {
   );
 }
 
+// ─── Liquid Glass constants (mirrors home.tsx) ────────────────────────────────
+const GLASS_PANEL: any = {
+  backdropFilter: 'blur(40px) saturate(107%)',
+  WebkitBackdropFilter: 'blur(40px) saturate(107%)',
+  boxShadow: '0 8px 28px rgba(0,0,0,0.14), inset 0 0 0 0.5px rgba(255,255,255,0.60)',
+  isolation: 'isolate',
+};
+const GL1: any = { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(255,255,255,0.16)', borderRadius: 100 };
+const GL2: any = { ...StyleSheet.absoluteFillObject, borderRadius: 100, backgroundImage: 'linear-gradient(315deg, rgba(255,255,255,0.80) 0%, rgba(255,255,255,0) 55%)' };
+const GL3: any = { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(200,200,212,0.08)', mixBlendMode: 'color-burn', borderRadius: 100 };
+
 // ─── Chart functions (strategy, end = 96622.77) ────────────────────────────────
 const STRATEGY_END = 96622.77;
 
@@ -337,14 +348,16 @@ export default function StrategyScreen() {
   return (
     <View style={s.root}>
 
-      {/* ── Fixed header ── */}
-      <View style={[s.header, { backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' } as any]}>
+      {/* ── Fixed header — individual Liquid Glass containers ── */}
+      <View style={s.header} pointerEvents="box-none">
         <View style={s.statusSpacer} />
         <View style={s.navBar}>
-          <SpringPressable style={s.navBtn} scaleTo={0.82} onPress={() => router.back()}>
+          <SpringPressable style={[s.navGlassBtn, GLASS_PANEL]} scaleTo={0.82} onPress={() => router.back()}>
+            <View style={GL1} /><View style={GL2} /><View style={GL3} />
             <BackChevron />
           </SpringPressable>
-          <SpringPressable style={s.navBtn} scaleTo={0.82}>
+          <SpringPressable style={[s.navGlassBtn, GLASS_PANEL]} scaleTo={0.82}>
+            <View style={GL1} /><View style={GL2} /><View style={GL3} />
             <ShareIcon />
           </SpringPressable>
         </View>
@@ -665,20 +678,19 @@ const s = StyleSheet.create({
   // ── Header ──
   header: {
     position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100,
-    backgroundColor: 'rgba(252,252,252,0.92)',
-    borderBottomWidth: 1, borderBottomColor: 'rgba(0,0,0,0.06)',
+    backgroundColor: 'transparent',
   },
   statusSpacer: { height: Platform.OS === 'ios' ? 56 : Platform.OS === 'web' ? 58 : 28 },
   navBar: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: 16, paddingVertical: 10,
   },
-  navBtn: {
-    width: 32, height: 32, borderRadius: 8,
-    backgroundColor: '#f5f5f5',
+  navGlassBtn: {
+    width: 40, height: 40, borderRadius: 100,
+    backgroundColor: 'transparent',
+    overflow: 'hidden', position: 'relative',
     alignItems: 'center', justifyContent: 'center',
   },
-  navTitle: { fontSize: 16, fontWeight: '500', color: 'rgba(10,13,18,0.9)' },
 
   // ── Hero card ──
   heroCard: {
