@@ -6,13 +6,12 @@ import {
   Image,
   Pressable,
   StyleSheet,
-  StatusBar,
   Platform,
 } from 'react-native';
 import { colors, spacing, radius, fontSize, fontWeight, lineHeight } from '../constants/tokens';
 
 // ─── Local assets ─────────────────────────────────────────────────────────────
-// Icons (SVG via web Image = <img>)
+
 const Icons = {
   plus:         require('../assets/icons/icon-plus.svg'),
   building:     require('../assets/icons/icon-building.svg'),
@@ -25,16 +24,18 @@ const Icons = {
   gift:         require('../assets/icons/icon-gift.svg'),
   bell:         require('../assets/icons/icon-bell.svg'),
   settings:     require('../assets/icons/icon-settings.svg'),
+  dot:          require('../assets/icons/icon-dot.svg'),
 };
 
 const Images = {
-  proBadgeBg:     require('../assets/images/pro-badge-bg.png'),
-  surmountLogo:   require('../assets/images/surmount-logo.svg'),
-  chartFill:      require('../assets/images/chart-fill.svg'),
-  chartLine:      require('../assets/images/chart-line.svg'),
-  cardEtf:        require('../assets/images/card-etf.png'),
-  cardDirectIdx:  require('../assets/images/card-direct-indexing.png'),
-  cardReferral:   require('../assets/images/card-referral.png'),
+  proBadgeBg:       require('../assets/images/pro-badge-bg.png'),
+  proBadgeGear:     require('../assets/images/pro-badge-gear.svg'),
+  portfolioValueBg: require('../assets/images/portfolio-value-bg.png'),
+  chartFill:        require('../assets/images/chart-fill.svg'),
+  chartLine:        require('../assets/images/chart-line.svg'),
+  cardEtf:          require('../assets/images/card-etf.png'),
+  cardDirectIdx:    require('../assets/images/card-direct-indexing.png'),
+  cardReferral:     require('../assets/images/card-referral.png'),
 };
 
 const Avatars = {
@@ -45,6 +46,7 @@ const Avatars = {
   brokerRobinhood:   require('../assets/avatars/broker-robinhood.png'),
   brokerIBKR:        require('../assets/avatars/broker-ibkr.png'),
   brokerSchwab:      require('../assets/avatars/broker-schwab.png'),
+  brokerSchwab2:     require('../assets/avatars/broker-schwab-2.png'),
   brokerWebull:      require('../assets/avatars/broker-webull.png'),
   brokerKraken:      require('../assets/avatars/broker-kraken.png'),
   brokerSurmount:    require('../assets/avatars/broker-surmount.png'),
@@ -61,7 +63,7 @@ const HOLDINGS = [
     id: '1',
     name: 'Investing in Argentina',
     avatar: Avatars.holdingArgentina,
-    broker: 'Robinhood',
+    label: 'Robinhood',
     brokerAvatars: [Avatars.brokerRobinhood],
     value: '$87,654.32',
     change: '+ $25.75 (+1.50%)',
@@ -70,8 +72,8 @@ const HOLDINGS = [
     id: '2',
     name: 'AAPL GOOG Arb',
     avatar: Avatars.holdingAaplGoog,
-    broker: '4 accounts',
-    brokerAvatars: [Avatars.brokerRobinhood, Avatars.brokerIBKR, Avatars.brokerSchwab],
+    label: '4 accounts',
+    brokerAvatars: [Avatars.brokerRobinhood, Avatars.brokerSchwab2, Avatars.brokerKraken],
     value: '$172,345.67',
     change: '+ $30.90 (+1.80%)',
   },
@@ -79,59 +81,43 @@ const HOLDINGS = [
     id: '3',
     name: 'Future of Consumer Tech',
     avatar: Avatars.holdingConsumer,
-    broker: '2 accounts',
-    brokerAvatars: [Avatars.brokerWebull, Avatars.brokerKraken],
+    label: '2 accounts',
+    brokerAvatars: [Avatars.brokerIBKR, Avatars.brokerWebull],
     value: '$162,789.45',
     change: '+ $35.20 (+2.00%)',
   },
 ];
 
 const ACTIVITY = [
-  { id: '1', name: 'V',                   broker: 'Kraken',    brokerAvatar: Avatars.brokerKraken,   avatar: Avatars.activityVisa,   isSystem: false, amount: '-$130.60',   label: 'Sell' },
-  { id: '2', name: 'GOOGL',               broker: 'IBKR',      brokerAvatar: Avatars.brokerIBKR,     avatar: Avatars.activityGoogl,  isSystem: false, amount: '+$124.52',   label: 'Buy' },
-  { id: '3', name: 'Portfolio rebalanced',broker: 'Kraken',    brokerAvatar: Avatars.brokerKraken,   icon: Icons.refresh,            isSystem: true,  amount: '$2,000.00',  label: 'Tax loss harvesting' },
-  { id: '4', name: 'Deposit',             broker: 'Surmount',  brokerAvatar: Avatars.brokerSurmount, icon: Icons.moneyIn,            isSystem: true,  amount: '+$2,000.00', label: '' },
-  { id: '5', name: 'Withdrawal',          broker: 'Surmount',  brokerAvatar: Avatars.brokerSurmount, icon: Icons.moneyOut,           isSystem: true,  amount: '-$2,000.00', label: '' },
+  { id: '1', name: 'V',                    label: 'Robinhood', brokerAvatar: Avatars.brokerRobinhood, avatar: Avatars.activityVisa,  isSystem: false, amount: '-$130.60',   type: 'Sell' },
+  { id: '2', name: 'GOOGL',                label: 'IBKR',      brokerAvatar: Avatars.brokerIBKR,      avatar: Avatars.activityGoogl, isSystem: false, amount: '+$124.52',   type: 'Buy' },
+  { id: '3', name: 'Portfolio rebalanced', label: 'Kraken',    brokerAvatar: Avatars.brokerKraken,    icon: Icons.refresh,           isSystem: true,  amount: '$2,000.00',  type: 'Tax loss harvesting' },
+  { id: '4', name: 'Deposit',              label: 'Surmount',  brokerAvatar: Avatars.brokerSurmount,  icon: Icons.moneyIn,           isSystem: true,  amount: '+$2,000.00', type: '' },
+  { id: '5', name: 'Withdrawal',           label: 'Surmount',  brokerAvatar: Avatars.brokerSurmount,  icon: Icons.moneyOut,          isSystem: true,  amount: '-$2,000.00', type: '' },
 ];
 
 const NEWS = [
-  { id: '1', source: 'The Wall Street Journal', time: '4 hours ago',
-    headline: "Nvidia to deliver 'modest' earnings beat, but outlook 'could face headwinds'" },
-  { id: '2', source: 'Bloomberg', time: '3 hours ago',
-    headline: "Tesla's production targets remain ambitious despite supply chain challenges" },
-  { id: '3', source: 'Reuters', time: '2 hours ago',
-    headline: "Apple's iPhone 15 sales show strong demand ahead of holiday season" },
-  { id: '4', source: 'Financial Times', time: '1 hour ago',
-    headline: 'Amazon explores new AI initiatives to enhance its logistics operations' },
+  { id: '1', source: 'The Wall Street Journal', time: '4 hours ago', headline: "Nvidia to deliver 'modest' earnings beat, but outlook 'could face headwinds'" },
+  { id: '2', source: 'Bloomberg',               time: '3 hours ago', headline: "Tesla's production targets remain ambitious despite supply chain challenges" },
+  { id: '3', source: 'Reuters',                 time: '2 hours ago', headline: "Apple's iPhone 15 sales show strong demand ahead of holiday season" },
+  { id: '4', source: 'Financial Times',         time: '1 hour ago',  headline: 'Amazon explores new AI initiatives to enhance its logistics operations' },
 ];
 
-// ─── Design system primitives ─────────────────────────────────────────────────
+// ─── Primitives ───────────────────────────────────────────────────────────────
 
-function DSText({
-  style,
-  ...props
-}: React.ComponentProps<typeof Text>) {
-  return <Text style={[{ fontFamily: 'Geist' }, style]} {...props} />;
+function T({ style, ...p }: React.ComponentProps<typeof Text>) {
+  return <Text style={[{ fontFamily: 'Geist' }, style]} {...p} />;
 }
 
-function Divider({ wide = false }: { wide?: boolean }) {
-  return (
-    <View style={[s.divider, wide && { width: '100%' }]} />
-  );
+function Divider({ indent = true }: { indent?: boolean }) {
+  return <View style={[s.divider, !indent && { width: '100%' }]} />;
 }
 
-function Avatar({ source, size = 32 }: { source: any; size?: number }) {
+function CircleAvatar({ source, size = 32 }: { source: any; size?: number }) {
   return (
     <Image
       source={source}
-      style={{
-        width: size,
-        height: size,
-        borderRadius: size / 2,
-        borderWidth: 0.75,
-        borderColor: 'rgba(0,0,0,0.08)',
-        backgroundColor: colors.bgTertiary,
-      }}
+      style={{ width: size, height: size, borderRadius: size / 2, borderWidth: size > 20 ? 0.75 : 0.5, borderColor: 'rgba(0,0,0,0.08)' }}
       resizeMode="cover"
     />
   );
@@ -139,20 +125,10 @@ function Avatar({ source, size = 32 }: { source: any; size?: number }) {
 
 function AvatarStack({ sources }: { sources: any[] }) {
   return (
-    <View style={s.avatarStack}>
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       {sources.slice(0, 3).map((src, i) => (
         <View key={i} style={{ marginLeft: i > 0 ? -4 : 0, zIndex: 3 - i }}>
-          <Image
-            source={src}
-            style={{
-              width: 16,
-              height: 16,
-              borderRadius: 8,
-              borderWidth: 0.5,
-              borderColor: 'rgba(0,0,0,0.08)',
-            }}
-            resizeMode="cover"
-          />
+          <Image source={src} style={{ width: 16, height: 16, borderRadius: 8, borderWidth: 0.5, borderColor: 'rgba(0,0,0,0.08)' }} resizeMode="cover" />
         </View>
       ))}
     </View>
@@ -162,65 +138,19 @@ function AvatarStack({ sources }: { sources: any[] }) {
 function BadgePill({ icon, label }: { icon?: any; label: string }) {
   return (
     <View style={s.badge}>
-      {icon && <Image source={icon} style={s.badgeIcon} resizeMode="contain" />}
-      <DSText style={s.badgeText}>{label}</DSText>
+      {icon && <Image source={icon} style={{ width: 12, height: 12 }} resizeMode="contain" />}
+      <T style={s.badgeTxt}>{label}</T>
     </View>
   );
 }
 
-function HoldingRow({ item }: { item: typeof HOLDINGS[0] }) {
+function RowMeta({ brokerAvatars, label }: { brokerAvatars: any[]; label: string }) {
   return (
-    <View style={s.listRow}>
-      <Avatar source={item.avatar} size={32} />
-      <View style={s.listMid}>
-        <DSText style={s.listName}>{item.name}</DSText>
-        <View style={s.listMeta}>
-          {item.brokerAvatars.length > 1
-            ? <AvatarStack sources={item.brokerAvatars} />
-            : (
-              <Image
-                source={item.brokerAvatars[0]}
-                style={{ width: 16, height: 16, borderRadius: 8, borderWidth: 0.5, borderColor: 'rgba(0,0,0,0.08)' }}
-                resizeMode="cover"
-              />
-            )
-          }
-          <DSText style={s.listSub}>{item.broker}</DSText>
-        </View>
-      </View>
-      <View style={s.listRight}>
-        <DSText style={s.listValue}>{item.value}</DSText>
-        <DSText style={s.changeGreen}>{item.change}</DSText>
-      </View>
-    </View>
-  );
-}
-
-function ActivityRow({ item }: { item: typeof ACTIVITY[0] }) {
-  return (
-    <View style={s.listRow}>
-      {item.isSystem ? (
-        <View style={s.systemCircle}>
-          <Image source={item.icon} style={s.systemIcon} resizeMode="contain" />
-        </View>
-      ) : (
-        <Avatar source={item.avatar} size={32} />
-      )}
-      <View style={s.listMid}>
-        <DSText style={s.listName}>{item.name}</DSText>
-        <View style={s.listMeta}>
-          <Image
-            source={item.brokerAvatar}
-            style={{ width: 16, height: 16, borderRadius: 8, borderWidth: 0.5, borderColor: 'rgba(0,0,0,0.08)' }}
-            resizeMode="cover"
-          />
-          <DSText style={s.listSub}>{item.broker}</DSText>
-        </View>
-      </View>
-      <View style={s.listRight}>
-        <DSText style={s.listValue}>{item.amount}</DSText>
-        {!!item.label && <DSText style={s.activityType}>{item.label}</DSText>}
-      </View>
+    <View style={s.rowMeta}>
+      {brokerAvatars.length > 1
+        ? <AvatarStack sources={brokerAvatars} />
+        : <CircleAvatar source={brokerAvatars[0]} size={16} />}
+      <T style={s.rowSub}>{label}</T>
     </View>
   );
 }
@@ -231,194 +161,231 @@ const HEADER_H = Platform.OS === 'ios' ? 112 : 90;
 
 export default function HomeScreen() {
   const [period, setPeriod] = useState('1D');
-  const [holdingsTab, setHoldingsTab] = useState('All');
+  const [tab, setTab] = useState('All');
 
   return (
     <View style={s.root}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fcfcfc" />
-
       <ScrollView
         style={s.scroll}
-        contentContainerStyle={{ paddingTop: HEADER_H }}
+        contentContainerStyle={{ paddingTop: HEADER_H, paddingBottom: 40 }}
         showsVerticalScrollIndicator={false}
       >
 
         {/* ── Portfolio hero ── */}
         <View style={s.hero}>
+
           {/* Surmount Pro badge */}
           <View style={s.proPill}>
             <Image source={Images.proBadgeBg} style={StyleSheet.absoluteFillObject} resizeMode="cover" />
-            <Image source={Images.surmountLogo} style={s.proLogo} resizeMode="contain" />
-            <DSText style={s.proLabel}>Surmount Pro</DSText>
+            <View style={s.proGearWrap}>
+              <Image source={Images.proBadgeGear} style={StyleSheet.absoluteFillObject} resizeMode="contain" />
+            </View>
+            <T style={s.proLabel}>Surmount Pro</T>
           </View>
 
-          {/* Value */}
-          <View style={s.valueBlock}>
-            <Text style={s.portfolioValue}>$2,234,678.92</Text>
-            <DSText style={s.portfolioGain}>+$633.63 (+2.42%) this week</DSText>
+          {/* Portfolio value */}
+          <View style={s.valueWrap}>
+            <View style={s.portfolioValueRow}>
+              <Image source={Images.portfolioValueBg} style={StyleSheet.absoluteFillObject} resizeMode="cover" />
+              <Text style={s.portfolioValue}>$2,234,678.92</Text>
+            </View>
+            <T style={s.portfolioGain}>+$633.63 (+2.42%) this week</T>
           </View>
 
-          {/* Chart */}
-          <View style={s.chartWrap}>
-            <Image source={Images.chartFill} style={StyleSheet.absoluteFillObject} resizeMode="stretch" />
-            <Image source={Images.chartLine} style={StyleSheet.absoluteFillObject} resizeMode="stretch" />
+          {/* Chart — full width 390×237 */}
+          <View style={s.chart}>
+            <Image source={Images.chartFill} style={[StyleSheet.absoluteFillObject, { width: '100%', height: '100%' }]} resizeMode="stretch" />
+            <Image source={Images.chartLine} style={[StyleSheet.absoluteFillObject, { width: '100%', height: '100%' }]} resizeMode="stretch" />
           </View>
 
           {/* Period selector */}
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View style={s.periodBar}>
-              {TIME_PERIODS.map(p => (
-                <Pressable
-                  key={p}
-                  style={[s.periodBtn, period === p && s.periodBtnActive]}
-                  onPress={() => setPeriod(p)}
-                >
-                  <DSText style={[s.periodTxt, period === p && s.periodTxtActive]}>{p}</DSText>
-                </Pressable>
-              ))}
-            </View>
-          </ScrollView>
+          <View style={s.periodBar}>
+            {TIME_PERIODS.map(p => (
+              <Pressable key={p} style={[s.periodBtn, period === p && s.periodBtnActive]} onPress={() => setPeriod(p)}>
+                <T style={[s.periodTxt, period === p && s.periodTxtActive]}>{p}</T>
+              </Pressable>
+            ))}
+          </View>
         </View>
 
         {/* ── Quick actions ── */}
         <View style={s.quickRow}>
           <Pressable style={s.quickCard}>
             <Image source={Icons.plus} style={s.quickIcon} resizeMode="contain" />
-            <DSText style={s.quickLabel}>Connect accounts</DSText>
+            <T style={s.quickLabel}>Connect accounts</T>
           </Pressable>
           <Pressable style={s.quickCard}>
             <Image source={Icons.building} style={s.quickIcon} resizeMode="contain" />
-            <DSText style={s.quickLabel}>Invest in strategies</DSText>
+            <T style={s.quickLabel}>Invest in strategies</T>
           </Pressable>
         </View>
 
         {/* ── Holdings ── */}
-        <View style={s.block}>
-          <View style={s.blockHeadRow}>
-            <DSText style={s.blockTitle}>Holdings</DSText>
-            <Image source={Icons.arrowNarrow} style={[s.inlineIcon, { transform: [{ rotate: '-90deg' }] }]} resizeMode="contain" />
+        <View style={s.section}>
+          {/* Header */}
+          <View style={s.sectionHead}>
+            <T style={s.sectionTitle}>Holdings</T>
+            <View style={{ transform: [{ rotate: '-90deg' }] }}>
+              <Image source={Icons.arrowNarrow} style={{ width: 20, height: 20 }} resizeMode="contain" />
+            </View>
           </View>
 
-          {/* Holdings tab bar — button-gray style from DS */}
+          {/* Tabs — button-border style from DS */}
           <View style={s.tabRow}>
             {['All', 'Assets', 'Strategies'].map(t => (
-              <Pressable
-                key={t}
-                style={[s.tabBtn, holdingsTab === t && s.tabBtnActive]}
-                onPress={() => setHoldingsTab(t)}
-              >
-                <DSText style={[s.tabTxt, holdingsTab === t && s.tabTxtActive]}>{t}</DSText>
+              <Pressable key={t} style={[s.tabBtn, tab === t && s.tabBtnActive]} onPress={() => setTab(t)}>
+                <T style={[s.tabTxt, tab === t && s.tabTxtActive]}>{t}</T>
               </Pressable>
             ))}
           </View>
 
-          {/* List */}
+          {/* Holding rows */}
           {HOLDINGS.map((item, i) => (
             <View key={item.id}>
-              <HoldingRow item={item} />
+              <View style={s.listRow}>
+                <CircleAvatar source={item.avatar} size={32} />
+                <View style={s.listMid}>
+                  <T style={s.listName}>{item.name}</T>
+                  <RowMeta brokerAvatars={item.brokerAvatars} label={item.label} />
+                </View>
+                <View style={s.listRight}>
+                  <T style={s.listValue}>{item.value}</T>
+                  <T style={s.changeGreen}>{item.change}</T>
+                </View>
+              </View>
               {i < HOLDINGS.length - 1 && <Divider />}
             </View>
           ))}
         </View>
 
         {/* ── Recent activity ── */}
-        <View style={s.block}>
-          <DSText style={s.blockTitle}>Recent activity</DSText>
-          <DSText style={s.dateLabel}>January 21, 2026</DSText>
+        <View style={s.section}>
+          <T style={s.sectionTitle}>Recent activity</T>
+          <T style={s.dateLabel}>January 21, 2026</T>
+
           {ACTIVITY.map((item, i) => (
             <View key={item.id}>
-              <ActivityRow item={item} />
+              <View style={s.listRow}>
+                {item.isSystem ? (
+                  <View style={s.systemCircle}>
+                    <Image source={item.icon} style={{ width: 16, height: 16 }} resizeMode="contain" />
+                  </View>
+                ) : (
+                  <CircleAvatar source={item.avatar} size={32} />
+                )}
+                <View style={s.listMid}>
+                  <T style={s.listName}>{item.name}</T>
+                  <RowMeta brokerAvatars={[item.brokerAvatar]} label={item.label} />
+                </View>
+                <View style={s.listRight}>
+                  <T style={s.listValue}>{item.amount}</T>
+                  {!!item.type && <T style={s.activityType}>{item.type}</T>}
+                </View>
+              </View>
               {i < ACTIVITY.length - 1 && <Divider />}
             </View>
           ))}
-          <Pressable style={s.viewAll}>
-            <DSText style={s.viewAllTxt}>View all</DSText>
+
+          <Pressable style={s.viewAllBtn}>
+            <T style={s.viewAllTxt}>View all</T>
           </Pressable>
         </View>
 
         {/* ── Daily news ── */}
-        <View style={s.block}>
-          <DSText style={s.blockTitle}>Daily news</DSText>
-          <View style={s.newsList}>
-            {NEWS.map((item, i) => (
-              <View key={item.id}>
-                <View style={s.newsRow}>
-                  <View style={s.newsBody}>
-                    <DSText style={s.newsSource}>{item.source}</DSText>
-                    <DSText style={s.newsHeadline}>{item.headline}</DSText>
-                    <DSText style={s.newsTime}>{item.time}</DSText>
-                  </View>
-                  <View style={s.newsThumb} />
+        <View style={s.section}>
+          <T style={s.sectionTitle}>Daily news</T>
+          {NEWS.map((item, i) => (
+            <View key={item.id}>
+              <View style={s.newsRow}>
+                <View style={s.newsBody}>
+                  <T style={s.newsSource}>{item.source}</T>
+                  <T style={s.newsHeadline}>{item.headline}</T>
+                  <T style={s.newsTime}>{item.time}</T>
                 </View>
-                {i < NEWS.length - 1 && <Divider wide />}
+                <View style={s.newsThumb} />
               </View>
-            ))}
-          </View>
+              {i < NEWS.length - 1 && <Divider indent={false} />}
+            </View>
+          ))}
         </View>
 
         {/* ── For you ── */}
-        <View style={s.block}>
-          <DSText style={s.blockTitle}>For you</DSText>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={s.cardsScroll} contentContainerStyle={s.cardsContent}>
-            {/* ETF card */}
-            <View style={[s.forYouCard, { backgroundColor: '#ecf3f7' }]}>
-              <View style={s.forYouInfo}>
-                <DSText style={s.forYouTitle}>ETF Portfolios</DSText>
-                <DSText style={s.forYouDesc}>Classic portfolios made up of ETFs.</DSText>
-                <View style={s.badgeRow}>
+        <View style={s.section}>
+          <T style={s.sectionTitle}>For you</T>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ marginHorizontal: -spacing.xl }}
+            contentContainerStyle={{ paddingHorizontal: spacing.xl, gap: 20 }}
+          >
+            {/* ETF Portfolios */}
+            <View style={[s.card, { backgroundColor: '#ecf3f7' }]}>
+              <View style={s.cardInfo}>
+                <T style={s.cardTitle}>ETF Portfolios</T>
+                <T style={s.cardDesc}>Classic portfolios made up of ETFs.</T>
+                <View style={s.cardBadges}>
                   <BadgePill icon={Icons.dollarCircle} label="Up to 9%" />
                   <BadgePill label="Risk level: 2/5" />
                 </View>
               </View>
-              <Image source={Images.cardEtf} style={s.cardImg} resizeMode="cover" />
+              <Image source={Images.cardEtf} style={s.cardImg} resizeMode="contain" />
             </View>
 
-            {/* Direct indexing card */}
-            <View style={[s.forYouCard, { backgroundColor: '#f1f4e8' }]}>
-              <View style={s.forYouInfo}>
-                <DSText style={s.forYouTitle}>Direct indexing</DSText>
-                <DSText style={s.forYouDesc}>Own the market, minimize your taxes.</DSText>
-                <View style={s.badgeRow}>
+            {/* Direct indexing */}
+            <View style={[s.card, { backgroundColor: '#f1f4e8' }]}>
+              <View style={s.cardInfo}>
+                <T style={s.cardTitle}>Direct indexing</T>
+                <T style={s.cardDesc}>Own the market, minimize your taxes.</T>
+                <View style={s.cardBadges}>
                   <BadgePill icon={Icons.dollarCircle} label="Up to 14%" />
                   <BadgePill label="Risk level: 4/5" />
                 </View>
               </View>
-              <Image source={Images.cardDirectIdx} style={s.cardImg} resizeMode="cover" />
+              <Image source={Images.cardDirectIdx} style={s.cardImg} resizeMode="contain" />
             </View>
 
-            {/* Referral card */}
-            <View style={[s.forYouCard, { backgroundColor: '#f4f3ee' }]}>
-              <View style={s.forYouInfo}>
-                <DSText style={s.forYouTitle}>Earn up to $10,000 USD for referral</DSText>
-                <DSText style={s.forYouDesc}>Join our referral program to earn up to $10,000 by inviting friends!</DSText>
+            {/* Referral */}
+            <View style={[s.card, { backgroundColor: '#f4f3ee' }]}>
+              <View style={[s.cardInfo, { width: 220 }]}>
+                <T style={s.cardTitle}>Earn up to $10,000 USD for referral</T>
+                <T style={s.cardDesc}>Join our referral program to earn up to $10,000 by inviting friends!</T>
               </View>
-              <Image source={Images.cardReferral} style={s.cardImg} resizeMode="cover" />
+              <Image source={Images.cardReferral} style={s.cardImgReferral} resizeMode="contain" />
             </View>
           </ScrollView>
         </View>
 
-        <View style={{ height: spacing['8xl'] }} />
       </ScrollView>
 
       {/* ── Fixed header ── */}
       <View style={s.header} pointerEvents="box-none">
-        <View style={s.statusBarSpacer} />
+        {/* Status bar spacer */}
+        <View style={s.statusSpacer} />
+
+        {/* Nav bar */}
         <View style={s.navBar}>
-          {/* Portfolio selector */}
+          {/* Portfolio selector pill */}
           <Pressable style={s.portfolioPill}>
-            <Image source={Avatars.user} style={s.navAvatar} resizeMode="cover" />
-            <DSText style={s.portfolioPillTxt}>All Portfolios</DSText>
-            <Image source={Icons.chevronDown} style={s.chevron} resizeMode="contain" />
+            {/* Luminosity gradient overlay */}
+            <View style={s.pillGradient} />
+            <CircleAvatar source={Avatars.user} size={20} />
+            <T style={s.pillTxt}>All Portfolios</T>
+            <Image source={Icons.chevronDown} style={s.pillChevron} resizeMode="contain" />
           </Pressable>
-          {/* Nav icons */}
+
+          {/* Action icons */}
           <View style={s.navIcons}>
-            <Pressable style={s.navIconBtn}>
+            <Pressable style={s.iconBtn}>
               <Image source={Icons.gift} style={s.navIcon} resizeMode="contain" />
             </Pressable>
-            <Pressable style={s.navIconBtn}>
+            <Pressable style={s.iconBtn}>
               <Image source={Icons.bell} style={s.navIcon} resizeMode="contain" />
+              {/* Notification dot */}
+              <View style={s.notifDot}>
+                <Image source={Icons.dot} style={{ width: 6, height: 6 }} resizeMode="contain" />
+              </View>
             </Pressable>
-            <Pressable style={s.navIconBtn}>
+            <Pressable style={s.iconBtn}>
               <Image source={Icons.settings} style={s.navIcon} resizeMode="contain" />
             </Pressable>
           </View>
@@ -431,412 +398,207 @@ export default function HomeScreen() {
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
 const s = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: '#fcfcfc',
-  },
+  root: { flex: 1, backgroundColor: '#fcfcfc' },
   scroll: { flex: 1 },
 
   // ── Header ──
   header: {
-    position: 'absolute',
-    top: 0, left: 0, right: 0,
-    backgroundColor: 'rgba(252,252,252,0.97)',
+    position: 'absolute', top: 0, left: 0, right: 0,
     zIndex: 100,
+    backgroundColor: 'rgba(252,252,252,0.96)',
   },
-  statusBarSpacer: { height: Platform.OS === 'ios' ? 56 : 28 },
+  statusSpacer: { height: Platform.OS === 'ios' ? 56 : 28 },
   navBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.xl,   // 16px
-    paddingVertical: spacing.lg,     // 12px
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: 16, paddingVertical: 12,
   },
   portfolioPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,                 // 8px
-    paddingVertical: spacing.sm,     // 6px
-    paddingHorizontal: spacing.md,   // 8px
+    flexDirection: 'row', alignItems: 'center', gap: 8,
+    paddingVertical: 6, paddingHorizontal: 8,
+    borderRadius: 35, borderWidth: 1, borderColor: 'rgba(0,0,0,0.09)',
+    overflow: 'hidden', position: 'relative',
+  },
+  pillGradient: {
+    ...StyleSheet.absoluteFillObject,
     borderRadius: 35,
-    borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.09)',
-    backgroundColor: colors.bgPrimary,
+    // Simulated luminosity gradient from Figma
+    backgroundColor: '#f5f5f5',
+    opacity: 0.6,
   },
-  navAvatar: {
-    width: 20, height: 20,
-    borderRadius: 10,
-    borderWidth: 0.5,
-    borderColor: 'rgba(0,0,0,0.10)',
-    backgroundColor: '#e0e0e0',
+  pillTxt: {
+    fontSize: 14, fontWeight: '500', color: '#414651', letterSpacing: -0.3,
   },
-  portfolioPillTxt: {
-    fontSize: fontSize.textSm,      // 14px
-    fontWeight: fontWeight.medium,
-    color: colors.fgSecondary,       // #414651
-    letterSpacing: -0.3,
-  },
-  chevron: { width: 16, height: 16, opacity: 0.45 },
-  navIcons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.lg,                 // 12px
-  },
-  navIconBtn: {
-    width: 32, height: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: radius.sm,         // 6px
+  pillChevron: { width: 16, height: 16, opacity: 0.5 },
+  navIcons: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  iconBtn: {
+    width: 32, height: 32, alignItems: 'center', justifyContent: 'center',
+    borderRadius: 6, position: 'relative',
   },
   navIcon: { width: 20, height: 20 },
+  notifDot: {
+    position: 'absolute', top: 5, right: 4,
+    width: 8, height: 8, alignItems: 'center', justifyContent: 'center',
+  },
 
   // ── Hero ──
   hero: {
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing['3xl'],      // 24px
-    gap: spacing.md,                 // 8px
-    alignItems: 'center',
+    alignItems: 'center', gap: 8,
+    paddingTop: 24, paddingHorizontal: 16,
   },
   proPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'center',
-    gap: spacing.xs,                 // 4px
-    paddingLeft: 6,
-    paddingRight: spacing['2-5'],    // 10px
-    paddingVertical: spacing.xs,     // 4px
-    borderRadius: 35,
-    borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.10)',
-    overflow: 'hidden',
+    flexDirection: 'row', alignItems: 'center', alignSelf: 'center',
+    gap: 4, paddingLeft: 6, paddingRight: 10, paddingVertical: 4,
+    borderRadius: 35, borderWidth: 1, borderColor: 'rgba(0,0,0,0.10)',
+    overflow: 'hidden', position: 'relative',
   },
-  proLogo: { width: 20, height: 20 },
+  proGearWrap: {
+    width: 20, height: 20,
+    overflow: 'hidden', position: 'relative',
+  },
   proLabel: {
-    fontSize: fontSize.textXs,      // 12px
-    fontWeight: fontWeight.medium,
-    color: colors.textSecondary,
-    letterSpacing: -0.2,
+    fontSize: 12, fontWeight: '500', color: 'rgba(10,13,18,0.7)', letterSpacing: -0.2,
   },
-  valueBlock: {
-    alignItems: 'center',
-    gap: 6,
-    marginTop: spacing.sm,          // 6px
+  valueWrap: { alignItems: 'center', gap: 6, marginTop: 6 },
+  portfolioValueRow: {
+    position: 'relative', overflow: 'hidden',
+    alignSelf: 'center',
   },
   portfolioValue: {
-    fontFamily: 'Inter',
-    fontSize: fontSize.displayXs,   // 24px
-    fontWeight: fontWeight.medium,
-    color: colors.textPrimary,
-    letterSpacing: -0.5,
-    lineHeight: lineHeight.displayXs, // 32px
+    fontFamily: 'Inter', fontSize: 24, fontWeight: '500',
+    color: 'rgba(10,13,18,0.9)', letterSpacing: -0.5, lineHeight: 32,
   },
   portfolioGain: {
-    fontSize: fontSize.textSm,      // 14px
-    fontWeight: fontWeight.medium,
-    color: colors.textSuccess,
-    letterSpacing: -0.3,
-    lineHeight: lineHeight.textSm,
+    fontSize: 14, fontWeight: '500', color: '#3b7e3f',
+    letterSpacing: -0.3, lineHeight: 20,
   },
-  chartWrap: {
-    width: 390,
-    height: 200,
-    marginHorizontal: -spacing.xl,
-    alignSelf: 'stretch',
-    marginTop: spacing.sm,
+
+  // ── Chart ──
+  chart: {
+    width: 390, height: 237,
+    marginHorizontal: -16, alignSelf: 'stretch',
+    marginTop: 8, position: 'relative',
   },
+
+  // ── Period bar ──
   periodBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,                 // 4px
-    backgroundColor: colors.bgTertiary,
-    borderRadius: radius['2xl'],     // 16px
-    padding: spacing.xs,
-    marginTop: spacing.sm,
+    flexDirection: 'row', alignItems: 'center', gap: 4,
+    backgroundColor: '#f5f5f5', borderRadius: 16, padding: 4,
+    marginTop: 8,
   },
   periodBtn: {
-    paddingHorizontal: spacing['2-5'], // 10px
-    paddingVertical: spacing.xs,       // 4px
-    borderRadius: radius.xl,           // 12px
+    paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12,
   },
-  periodBtnActive: { backgroundColor: colors.bgActive },
-  periodTxt: {
-    fontSize: fontSize.textXs,        // 12px
-    fontWeight: fontWeight.regular,
-    color: colors.textQuaternary,
-    letterSpacing: -0.2,
-    lineHeight: lineHeight.textXs,    // 18px
-  },
-  periodTxtActive: { color: colors.textPrimary },
+  periodBtnActive: { backgroundColor: '#fafafa' },
+  periodTxt: { fontSize: 12, color: 'rgba(10,13,18,0.5)', lineHeight: 18 },
+  periodTxtActive: { color: 'rgba(10,13,18,0.9)' },
 
   // ── Quick actions ──
   quickRow: {
-    flexDirection: 'row',
-    gap: spacing.lg,                   // 12px
-    paddingHorizontal: spacing.xl,
-    marginTop: spacing['3xl'],         // 24px
+    flexDirection: 'row', gap: 12,
+    paddingHorizontal: 16, marginTop: 24,
   },
   quickCard: {
-    flex: 1,
-    backgroundColor: colors.bgTertiary,
-    borderRadius: radius.lg,           // 10px
-    borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.06)',
-    padding: spacing.xl,               // 16px
-    gap: spacing.md,                   // 8px
-    overflow: 'hidden',
+    flex: 1, backgroundColor: '#f5f5f5', borderRadius: 10,
+    borderWidth: 1, borderColor: 'rgba(0,0,0,0.06)',
+    padding: 16, gap: 8, overflow: 'hidden',
   },
   quickIcon: { width: 20, height: 20 },
   quickLabel: {
-    fontSize: fontSize.textSm,         // 14px
-    fontWeight: fontWeight.medium,
-    color: colors.textSecondary,
-    letterSpacing: -0.3,
-    lineHeight: lineHeight.textSm,
+    fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.7)',
+    letterSpacing: -0.3, lineHeight: 20,
   },
 
-  // ── Blocks ──
-  block: {
-    marginTop: spacing['5xl'],         // 40px
-    paddingHorizontal: spacing.xl,
-    gap: spacing.xl,                   // 16px
-  },
-  blockHeadRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  blockTitle: {
-    fontSize: fontSize.textLg,         // 18px
-    fontWeight: fontWeight.medium,
-    color: colors.textPrimary,
-    letterSpacing: -0.3,
-    lineHeight: lineHeight.textLg,     // 28px
-  },
-  inlineIcon: { width: 20, height: 20, opacity: 0.55 },
-
-  // ── Holdings tab bar (button-gray from DS) ──
-  tabRow: {
-    flexDirection: 'row',
-    gap: spacing.xs,                   // 4px
-  },
-  tabBtn: {
-    flex: 1,
-    height: 36,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: radius.md,           // 8px
-  },
-  tabBtnActive: {
-    backgroundColor: colors.bgPrimary,
-    borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.09)',
-  },
-  tabTxt: {
-    fontSize: fontSize.textSm,         // 14px
-    fontWeight: fontWeight.medium,
-    color: colors.gray500,             // #717680
-    letterSpacing: -0.3,
-  },
-  tabTxtActive: { color: colors.fgSecondary }, // #414651
-
-  // ── List rows ──
-  listRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.lg,                   // 12px
-    paddingVertical: 2,
-  },
-  listMid: { flex: 1, gap: spacing.xs }, // 4px
-  listName: {
-    fontSize: fontSize.textSm,         // 14px
-    fontWeight: fontWeight.regular,
-    color: colors.textPrimary,
-    letterSpacing: -0.3,
-    lineHeight: lineHeight.textSm,
-  },
-  listMeta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,                   // 6px
-  },
-  listSub: {
-    fontSize: fontSize.textXs,         // 12px
-    fontWeight: fontWeight.regular,
-    color: colors.fgTertiary,          // #535861
-    letterSpacing: -0.2,
-    lineHeight: lineHeight.textXs,
-  },
-  listRight: { alignItems: 'flex-end', gap: 2 },
-  listValue: {
-    fontSize: fontSize.textSm,         // 14px
-    fontWeight: fontWeight.regular,
-    color: colors.textPrimary,
-    letterSpacing: -0.3,
-    lineHeight: lineHeight.textSm,
-  },
-  changeGreen: {
-    fontSize: fontSize.textXs,         // 12px
-    fontWeight: fontWeight.regular,
-    color: colors.textSuccess,         // #3b7e3f
-    letterSpacing: -0.2,
-  },
-  avatarStack: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: 'rgba(0,0,0,0.06)',
-    marginVertical: spacing.lg,        // 12px
-    alignSelf: 'flex-end',
-    width: '85%',
-  },
-
-  // ── Activity ──
-  systemCircle: {
-    width: 32, height: 32,
-    borderRadius: 16,
-    backgroundColor: colors.bgTertiary,
-    borderWidth: 0.75,
-    borderColor: 'rgba(0,0,0,0.06)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  systemIcon: { width: 16, height: 16 },
-  activityType: {
-    fontSize: fontSize.textXs,
-    fontWeight: fontWeight.regular,
-    color: colors.fgTertiary,
-    letterSpacing: -0.2,
+  // ── Sections ──
+  section: { marginTop: 52, paddingHorizontal: 16, gap: 16 },
+  sectionHead: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  sectionTitle: {
+    fontSize: 18, fontWeight: '500', color: 'rgba(10,13,18,0.9)',
+    letterSpacing: -0.3, lineHeight: 28,
   },
   dateLabel: {
-    fontSize: fontSize.textXs,         // 12px
-    fontWeight: fontWeight.medium,
-    color: colors.textTertiary,
-    letterSpacing: -0.2,
-    lineHeight: lineHeight.textXs,
+    fontSize: 12, fontWeight: '500', color: 'rgba(10,13,18,0.6)',
+    letterSpacing: -0.2, lineHeight: 18,
   },
-  viewAll: {
-    height: 36,
-    backgroundColor: colors.bgPrimary,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.09)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: spacing.md,
+
+  // ── Holdings tabs (button-border DS style) ──
+  tabRow: { flexDirection: 'row', gap: 4 },
+  tabBtn: {
+    flex: 1, height: 36, alignItems: 'center', justifyContent: 'center',
+    borderRadius: 8, overflow: 'hidden',
+  },
+  tabBtnActive: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1, borderColor: 'rgba(0,0,0,0.09)',
+  },
+  tabTxt: {
+    fontSize: 14, fontWeight: '500', color: '#717680', letterSpacing: -0.3,
+  },
+  tabTxtActive: { color: '#414651' },
+
+  // ── List rows ──
+  listRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 2 },
+  listMid: { flex: 1, gap: 4 },
+  listName: { fontSize: 14, color: 'rgba(10,13,18,0.9)', letterSpacing: -0.3, lineHeight: 20 },
+  rowMeta: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  rowSub: { fontSize: 12, color: '#535862', letterSpacing: -0.2, lineHeight: 16 },
+  listRight: { alignItems: 'flex-end', gap: 2 },
+  listValue: { fontSize: 14, color: 'rgba(10,13,18,0.9)', letterSpacing: -0.3, lineHeight: 20 },
+  changeGreen: { fontSize: 12, color: '#3b7e3f', letterSpacing: -0.2, lineHeight: 18 },
+  activityType: { fontSize: 12, color: '#535862', letterSpacing: -0.2, lineHeight: 18 },
+  divider: {
+    height: 1, backgroundColor: 'rgba(0,0,0,0.06)',
+    marginVertical: 12, alignSelf: 'flex-end', width: '85%',
+  },
+  systemCircle: {
+    width: 32, height: 32, borderRadius: 16,
+    backgroundColor: '#f5f5f5', borderWidth: 0.75, borderColor: 'rgba(0,0,0,0.06)',
+    alignItems: 'center', justifyContent: 'center',
+  },
+
+  // ── View all button ──
+  viewAllBtn: {
+    height: 36, backgroundColor: '#ffffff', borderRadius: 8,
+    borderWidth: 1, borderColor: 'rgba(0,0,0,0.09)',
+    alignItems: 'center', justifyContent: 'center',
   },
   viewAllTxt: {
-    fontSize: fontSize.textSm,
-    fontWeight: fontWeight.medium,
-    color: colors.textSecondary,
-    letterSpacing: -0.3,
+    fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.7)', letterSpacing: -0.3,
   },
 
   // ── News ──
-  newsList: { gap: 0 },
   newsRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    gap: spacing.xl,
-    paddingVertical: spacing.sm,
+    flexDirection: 'row', alignItems: 'flex-start',
+    justifyContent: 'space-between', paddingVertical: 6,
   },
-  newsBody: { flex: 1, gap: spacing.xs },
-  newsSource: {
-    fontSize: fontSize.textXs,         // 12px
-    fontWeight: fontWeight.medium,
-    color: colors.textTertiary,
-    letterSpacing: -0.2,
-    lineHeight: lineHeight.textXs,
-  },
-  newsHeadline: {
-    fontSize: fontSize.textSm,         // 14px
-    fontWeight: fontWeight.regular,
-    color: colors.textPrimary,
-    letterSpacing: -0.3,
-    lineHeight: lineHeight.textSm,
-  },
-  newsTime: {
-    fontSize: fontSize.textXs,
-    fontWeight: fontWeight.regular,
-    color: colors.textTertiary,
-    letterSpacing: -0.2,
-  },
+  newsBody: { flex: 1, gap: 4, paddingRight: 16 },
+  newsSource: { fontSize: 12, fontWeight: '500', color: 'rgba(10,13,18,0.6)', lineHeight: 18 },
+  newsHeadline: { fontSize: 14, color: 'rgba(10,13,18,0.9)', letterSpacing: -0.3, lineHeight: 20 },
+  newsTime: { fontSize: 12, color: 'rgba(10,13,18,0.6)', lineHeight: 18 },
   newsThumb: {
-    width: 60, height: 60,
-    borderRadius: radius.md,
-    backgroundColor: colors.gray500,
-    flexShrink: 0,
+    width: 60, height: 60, borderRadius: 8, flexShrink: 0,
+    backgroundColor: '#717680',
   },
 
   // ── For you cards ──
-  cardsScroll: { marginHorizontal: -spacing.xl },
-  cardsContent: {
-    paddingHorizontal: spacing.xl,
-    gap: spacing['2xl'],               // 20px
+  card: {
+    width: 353, borderRadius: 12,
+    borderWidth: 1, borderColor: 'rgba(0,0,0,0.09)',
+    paddingHorizontal: 20, paddingVertical: 32,
+    flexDirection: 'row', alignItems: 'center',
+    overflow: 'hidden', gap: 12,
   },
-  forYouCard: {
-    width: 311,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.09)',
-    paddingHorizontal: 20,
-    paddingVertical: 32,
-    flexDirection: 'row',
-    alignItems: 'center',
-    overflow: 'hidden',
-    gap: spacing.lg,
-  },
-  forYouInfo: {
-    flex: 1,
-    gap: spacing.lg,
-  },
-  forYouTitle: {
-    fontSize: fontSize.textMd,         // 16px
-    fontWeight: fontWeight.medium,
-    color: colors.textPrimary,
-    letterSpacing: -0.3,
-    lineHeight: lineHeight.textMd,
-  },
-  forYouDesc: {
-    fontSize: fontSize.textSm,
-    fontWeight: fontWeight.regular,
-    color: colors.textTertiary,
-    letterSpacing: -0.3,
-    lineHeight: lineHeight.textSm,
-  },
-  badgeRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.lg,
-  },
-  cardImg: {
-    position: 'absolute',
-    right: -20,
-    bottom: 0,
-    width: 130,
-    height: 130,
-  },
+  cardInfo: { flex: 1, gap: 12 },
+  cardTitle: { fontSize: 16, fontWeight: '500', color: 'rgba(10,13,18,0.9)', letterSpacing: -0.3, lineHeight: 24 },
+  cardDesc: { fontSize: 14, color: 'rgba(10,13,18,0.6)', letterSpacing: -0.3, lineHeight: 20 },
+  cardBadges: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
+  cardImg: { position: 'absolute', right: -10, bottom: 0, width: 131, height: 131 },
+  cardImgReferral: { position: 'absolute', right: -10, top: '50%', width: 96, height: 96, transform: [{ translateY: -48 }] },
 
   // ── Badges ──
   badge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 2,
-    paddingLeft: spacing.sm,           // 6px
-    paddingRight: spacing.md,          // 8px
-    paddingVertical: 2,
-    borderRadius: radius.full,
-    borderWidth: 1,
-    borderColor: colors.gray200,
-    backgroundColor: colors.gray50,
+    flexDirection: 'row', alignItems: 'center', gap: 2,
+    paddingLeft: 6, paddingRight: 8, paddingVertical: 2,
+    borderRadius: 9999, borderWidth: 1, borderColor: '#e9eaeb', backgroundColor: '#fafafa',
   },
-  badgeIcon: { width: 12, height: 12 },
-  badgeText: {
-    fontSize: fontSize.textXs,         // 12px
-    fontWeight: fontWeight.medium,
-    color: colors.gray700,
-    letterSpacing: -0.2,
-  },
+  badgeTxt: { fontSize: 12, fontWeight: '500', color: '#414651', letterSpacing: -0.2 },
 });
