@@ -292,12 +292,13 @@ const METRICS_RIGHT = [
   { label: 'Total Trades',       value: '298'         },
 ];
 
+const TOP_HOLDINGS_MAX_PCT = 25;
 const TOP_HOLDINGS = [
-  { ticker: 'GOOG', name: 'Alphabet Inc.',         pct: 25, color: '#d97706' },
-  { ticker: 'HOOD', name: 'Robinhood Markets',     pct: 20, color: '#16a34a' },
-  { ticker: 'AMD',  name: 'Advanced Micro Devices',pct: 14, color: '#1e293b' },
-  { ticker: 'COIN', name: 'Coinbase Global',       pct: 12, color: '#1652f0' },
-  { ticker: 'TSLA', name: 'Tesla Inc.',            pct:  5, color: '#dc2626' },
+  { ticker: 'GOOG', pct: 25, bg: 'rgba(255,191,8,0.20)', fill: 'rgba(255,191,8,0.40)', avatar: 'activityGoogl'   as const },
+  { ticker: 'HOOD', pct: 20, bg: 'rgba(204,255,0,0.20)', fill: 'rgba(204,255,0,0.40)', avatar: 'brokerRobinhood' as const },
+  { ticker: 'AMD',  pct: 14, bg: 'rgba(23,24,29,0.20)',  fill: 'rgba(15,16,20,0.40)',  avatar: null },
+  { ticker: 'COIN', pct: 12, bg: 'rgba(0,82,255,0.20)',  fill: 'rgba(0,82,255,0.40)',  avatar: null },
+  { ticker: 'TSLA', pct:  5, bg: 'rgba(234,32,39,0.20)', fill: 'rgba(232,33,39,0.40)', avatar: null },
 ];
 
 // Exact Figma colors: #c8dbf5 #8eb8eb #75a5e5 #5585dc #7a5af8 (light→dark blue/purple)
@@ -504,28 +505,30 @@ export default function StrategyScreen() {
         {/* ── Top holdings ── */}
         <View style={s.section}>
           <T style={s.sectionTitle}>Top holdings</T>
-          <View style={s.whiteCard}>
-            {TOP_HOLDINGS.map((h, i) => (
-              <View key={h.ticker}>
-                <SpringPressable scaleTo={0.98} style={{ paddingHorizontal: 16, paddingVertical: 10 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12 }}>
-                    <View style={[s.tickerCircle, { backgroundColor: h.color + '18' }]}>
-                      <T style={[s.tickerInitial, { color: h.color }]}>{h.ticker[0]}</T>
-                    </View>
-                    <View style={{ flex: 1, gap: 5 }}>
-                      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <T style={s.holdingTicker}>{h.ticker}</T>
-                        <T style={s.holdingAlloc}>{h.pct}%</T>
+          <View style={{ gap: 8 }}>
+            {TOP_HOLDINGS.map(h => (
+              <SpringPressable key={h.ticker} scaleTo={0.98}>
+                <View style={[s.holdingRow, { backgroundColor: h.bg as any }]}>
+                  {/* Progress fill — left-rounded only */}
+                  <View style={[s.holdingFill, {
+                    width: `${(h.pct / TOP_HOLDINGS_MAX_PCT) * 32.1}%` as any,
+                    backgroundColor: h.fill as any,
+                  }]} />
+                  {/* Left: avatar + ticker */}
+                  <View style={s.holdingLeft}>
+                    {h.avatar ? (
+                      <Img source={Avatars[h.avatar]} style={s.holdingAvatar} contentFit="cover" />
+                    ) : (
+                      <View style={[s.holdingAvatar, s.holdingAvatarFallback]}>
+                        <T style={s.holdingAvatarTxt}>{h.ticker[0]}</T>
                       </View>
-                      <View style={s.progressBg}>
-                        <View style={[s.progressFill, { width: (h.pct + '%') as any, backgroundColor: h.color }]} />
-                      </View>
-                      <T style={s.holdingName}>{h.name}</T>
-                    </View>
+                    )}
+                    <T style={s.holdingTicker}>{h.ticker}</T>
                   </View>
-                </SpringPressable>
-                {i < TOP_HOLDINGS.length - 1 && <View style={s.rowDiv} />}
-              </View>
+                  {/* Right: allocation percentage */}
+                  <T style={s.holdingPct}>{h.pct}%</T>
+                </View>
+              </SpringPressable>
             ))}
           </View>
         </View>
@@ -764,14 +767,15 @@ const s = StyleSheet.create({
   breakdownRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4 },
   breakdownTxt: { fontSize: 12, fontWeight: '500', color: 'rgba(10,13,18,0.6)', lineHeight: 18 },
 
-  // ── Top holdings ──
-  tickerCircle:  { width: 36, height: 36, borderRadius: 10, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  tickerInitial: { fontSize: 14, fontWeight: '600' },
-  holdingTicker: { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
-  holdingName:   { fontSize: 12, color: '#717680', lineHeight: 16 },
-  holdingAlloc:  { fontSize: 14, color: 'rgba(10,13,18,0.6)', lineHeight: 20 },
-  progressBg:    { height: 4, backgroundColor: '#f0f1f2', borderRadius: 2, overflow: 'hidden' },
-  progressFill:  { height: 4, borderRadius: 2 },
+  // ── Top holdings (progress-bar rows) ──
+  holdingRow:          { height: 40, borderRadius: 8, position: 'relative', overflow: 'hidden' },
+  holdingFill:         { position: 'absolute', left: 0, top: 0, bottom: 0, borderTopLeftRadius: 8, borderBottomLeftRadius: 8 },
+  holdingLeft:         { position: 'absolute', left: 12, top: 8, bottom: 8, flexDirection: 'row', alignItems: 'center', gap: 8 },
+  holdingAvatar:       { width: 24, height: 24, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(10,13,18,0.10)' },
+  holdingAvatarFallback:{ alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.12)' },
+  holdingAvatarTxt:    { fontSize: 10, fontWeight: '700', color: 'rgba(10,13,18,0.8)' },
+  holdingTicker:       { fontSize: 14, fontWeight: '600', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
+  holdingPct:          { position: 'absolute', right: 12, top: 0, bottom: 0, textAlignVertical: 'center', fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.8)', lineHeight: 40 },
 
   // ── Industries ──
   colorBar:    { flexDirection: 'row', height: 16, borderRadius: 8, overflow: 'hidden', backgroundColor: '#e0e6ed' },
