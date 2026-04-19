@@ -301,13 +301,13 @@ const TOP_HOLDINGS = [
   { ticker: 'TSLA', pct:  5, bg: 'rgba(234,32,39,0.20)', fill: 'rgba(232,33,39,0.40)', avatar: null },
 ];
 
-// Exact Figma colors: #c8dbf5 #8eb8eb #75a5e5 #5585dc #7a5af8 (light→dark blue/purple)
+// Bar widths match Figma pixel values (25 / flex / flex / 84 / 102 in 358px container)
 const INDUSTRIES = [
-  { name: 'Information Technology', pct: 15, color: '#c8dbf5' },
-  { name: 'Real Estate',            pct: 15, color: '#8eb8eb' },
-  { name: 'Energy',                 pct: 15, color: '#75a5e5' },
-  { name: 'Telecom',                pct: 15, color: '#5585dc' },
-  { name: 'Healthcare',             pct: 15, color: '#7a5af8' },
+  { name: 'Information Technology', pct: 15, color: '#c8dbf5', barFlex: 0, barW: '7%'    },
+  { name: 'Real Estate',            pct: 15, color: '#8eb8eb', barFlex: 1, barW: undefined },
+  { name: 'Energy',                 pct: 15, color: '#75a5e5', barFlex: 1, barW: undefined },
+  { name: 'Telecom',                pct: 15, color: '#5585dc', barFlex: 0, barW: '23.5%'  },
+  { name: 'Healthcare',             pct: 15, color: '#7a5af8', barFlex: 0, barW: '28.5%'  },
 ];
 
 const TRANSACTIONS = [
@@ -319,9 +319,10 @@ const TRANSACTIONS = [
 ];
 
 const SIMILAR_STRATEGIES = [
-  { title: 'Quantum AI Leaders',      desc: 'AI and quantum computing synergies', returns: '+12.4%', gradient: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)' },
-  { title: 'Clean Energy Disruptors', desc: 'Leading the renewable transition',   returns: '+9.8%',  gradient: 'linear-gradient(135deg, #052e16 0%, #166534 100%)' },
-  { title: 'Biotech Innovation',      desc: 'Next-gen breakthroughs in biotech',  returns: '+7.2%',  gradient: 'linear-gradient(135deg, #2d0257 0%, #5b21b6 100%)' },
+  { title: 'Quantum Computing Leaders',          returns: '+87.53%', bg: 'rgb(47,27,0)',    gradient: 'linear-gradient(-90deg,rgba(47,27,0,0) 26%,rgb(47,27,0) 68%)'       },
+  { title: 'Artificial Intelligence Innovations', returns: '+65.12%', bg: 'rgb(32,38,42)',   gradient: 'linear-gradient(270deg,rgba(32,38,42,0) 26%,rgb(32,38,42) 67%)'    },
+  { title: 'RSI-Weighted ETFs',                  returns: '+78.45%', bg: 'rgb(16,29,32)',   gradient: 'linear-gradient(-90deg,rgba(36,55,60,0.1) 26%,rgb(16,29,32) 68%)'  },
+  { title: 'E-commerce Expansion',               returns: '+80.67%', bg: 'rgb(38,32,42)',   gradient: 'linear-gradient(270deg,rgba(38,32,42,0) 26%,rgb(38,32,42) 67%)'    },
 ];
 
 // ─── Layout constants ─────────────────────────────────────────────────────────
@@ -536,25 +537,24 @@ export default function StrategyScreen() {
         {/* ── Industries ── */}
         <View style={s.section}>
           <T style={s.sectionTitle}>Industries</T>
-          <View style={[s.whiteCard, { padding: 16, gap: 20 }]}>
-            {/* Segmented color bar — 16px tall, #e0e6ed bg, 8px radius */}
+          <View style={{ gap: 20 }}>
             <View style={s.colorBar}>
               {INDUSTRIES.map((ind) => (
-                <View key={ind.name} style={[s.colorBarSeg, { flex: 1, backgroundColor: ind.color }]} />
+                <View key={ind.name} style={[s.colorBarSeg, {
+                  flex: ind.barFlex,
+                  width: ind.barW as any,
+                  backgroundColor: ind.color,
+                }]} />
               ))}
             </View>
-            {/* Legend — 14px Medium, tall 8×16px swatch */}
-            <View style={{ gap: 0 }}>
-              {INDUSTRIES.map((ind, i) => (
-                <View key={ind.name}>
-                  <View style={s.legendRow}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                      <View style={[s.legendSwatch, { backgroundColor: ind.color }]} />
-                      <T style={s.legendName}>{ind.name}</T>
-                    </View>
-                    <T style={s.legendPct}>{ind.pct}%</T>
+            <View style={{ gap: 8 }}>
+              {INDUSTRIES.map((ind) => (
+                <View key={ind.name} style={s.legendRow}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                    <View style={[s.legendSwatch, { backgroundColor: ind.color }]} />
+                    <T style={s.legendName}>{ind.name}</T>
                   </View>
-                  {i < INDUSTRIES.length - 1 && <View style={[s.rowDiv, { marginHorizontal: 0 }]} />}
+                  <T style={s.legendPct}>{ind.pct}%</T>
                 </View>
               ))}
             </View>
@@ -563,42 +563,44 @@ export default function StrategyScreen() {
 
         {/* ── Recent transactions ── */}
         <View style={s.section}>
-          {/* Header: title + "Show more >" */}
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             <T style={s.sectionTitle}>Recent transactions</T>
-            <SpringPressable style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }} scaleTo={0.90}>
+            <SpringPressable style={{ flexDirection: 'row', alignItems: 'center', gap: 4, height: 28 }} scaleTo={0.90}>
               <T style={s.showMoreTxt}>Show more</T>
-              {/* @ts-ignore */}
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ display: 'block' }}>
+              <View style={{ width: 16, height: 16 }}>
                 {/* @ts-ignore */}
-                <path d="M6 12L10 8L6 4" stroke="rgba(10,13,18,0.6)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ display: 'block' }}>
+                  {/* @ts-ignore */}
+                  <path d="M6 12L10 8L6 4" stroke="rgba(10,13,18,0.6)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </View>
             </SpringPressable>
           </View>
-          <View style={s.whiteCard}>
+          <View style={{ gap: 2 }}>
             {TRANSACTIONS.map((tx, i) => (
               <View key={`${tx.ticker}-${i}`}>
-                <SpringPressable scaleTo={0.98} style={{ paddingHorizontal: 16, paddingVertical: 6 }}>
+                <SpringPressable scaleTo={0.98}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                    {/* 24px circle avatar */}
-                    <View style={[s.txCircle, { backgroundColor: tx.ticker === 'AMD' ? '#1e293b18' : '#dc262618' }]}>
+                    <View style={[s.txCircle, { backgroundColor: tx.ticker === 'AMD' ? 'rgba(30,41,59,0.09)' : 'rgba(220,38,38,0.09)' }]}>
                       <T style={[s.txInitial, { color: tx.ticker === 'AMD' ? '#1e293b' : '#dc2626' }]}>{tx.ticker.slice(0, 2)}</T>
                     </View>
-                    <View style={{ flex: 1 }}>
+                    <View style={{ flex: 1, paddingVertical: 6 }}>
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                         <T style={s.txTicker}>{tx.ticker}</T>
-                        {/* Badge: pill, Buy green / Sell red */}
                         <View style={[s.txBadge, tx.positive ? s.txBadgeBuy : s.txBadgeSell]}>
                           <T style={[s.txBadgeTxt, { color: tx.positive ? '#316434' : '#98443d' }]}>{tx.type}</T>
                         </View>
                       </View>
+                    </View>
+                    <View style={{ alignItems: 'flex-end', gap: 2 }}>
+                      <T style={s.txPct}>{tx.pct}</T>
                       <T style={s.txDate}>{tx.date}</T>
                     </View>
-                    {/* Pct: dark color (not green/red per Figma) */}
-                    <T style={s.txPct}>{tx.pct}</T>
                   </View>
                 </SpringPressable>
-                {i < TRANSACTIONS.length - 1 && <View style={s.rowDiv} />}
+                {i < TRANSACTIONS.length - 1 && (
+                  <View style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.06)' }} />
+                )}
               </View>
             ))}
           </View>
@@ -611,18 +613,24 @@ export default function StrategyScreen() {
             horizontal
             showsHorizontalScrollIndicator={false}
             style={{ marginHorizontal: -16 }}
-            contentContainerStyle={{ paddingHorizontal: 16, gap: 12, paddingBottom: 4 }}
+            contentContainerStyle={{ paddingHorizontal: 16, gap: 16, paddingBottom: 4 }}
           >
             {SIMILAR_STRATEGIES.map(strat => (
               <SpringPressable key={strat.title} scaleTo={0.97} style={s.similarCard}>
+                <View style={[StyleSheet.absoluteFillObject, { backgroundColor: strat.bg as any }]} />
                 <View style={[StyleSheet.absoluteFillObject, { backgroundImage: strat.gradient } as any]} />
-                <View style={{ gap: 4 }}>
+                <View style={s.similarContent}>
                   <T style={s.similarTitle}>{strat.title}</T>
-                  <T style={s.similarDesc}>{strat.desc}</T>
-                </View>
-                <View style={{ gap: 1 }}>
-                  <T style={s.similarReturn}>{strat.returns}</T>
-                  <T style={s.similarReturnLabel}>1Y return</T>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    {([Avatars.activityGoogl, Avatars.brokerRobinhood, Avatars.brokerIBKR, Avatars.brokerSchwab, Avatars.activityVisa] as const).map((src, i) => (
+                      <Img key={i} source={src} style={{ width: 18, height: 18, borderRadius: 9, marginRight: i < 4 ? -4 : 0, borderWidth: 0.5, borderColor: 'rgba(0,0,0,0.08)', zIndex: 5 - i }} contentFit="cover" />
+                    ))}
+                  </View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                    <T style={s.similarReturn}>{strat.returns}</T>
+                    <View style={{ width: 3, height: 3, borderRadius: 1.5, backgroundColor: '#d5d7da' }} />
+                    <T style={s.similarPeriod}>1 Year</T>
+                  </View>
                 </View>
               </SpringPressable>
             ))}
@@ -780,33 +788,35 @@ const s = StyleSheet.create({
   // ── Industries ──
   colorBar:    { flexDirection: 'row', height: 16, borderRadius: 8, overflow: 'hidden', backgroundColor: '#e0e6ed' },
   colorBarSeg: { height: 16 },
-  legendRow:   { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 10 },
-  legendSwatch:{ width: 8, height: 16, borderRadius: 6 },
+  legendRow:   { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 6 },
+  legendSwatch:{ width: 8, height: 16, borderRadius: 6, borderWidth: 0.67, borderColor: 'rgba(10,13,18,0.20)' },
   legendName:  { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.7)', lineHeight: 20 },
   legendPct:   { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.7)', lineHeight: 20 },
 
   // ── Recent transactions ──
-  txCircle:   { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  txCircle:   { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center', flexShrink: 0, borderWidth: 0.5, borderColor: 'rgba(0,0,0,0.08)' },
   txInitial:  { fontSize: 9, fontWeight: '700' },
-  txTicker:   { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
-  txDate:     { fontSize: 12, color: '#717680', lineHeight: 16 },
+  txTicker:   { fontSize: 14, fontWeight: '500', color: '#414651', lineHeight: 20 },
+  txDate:     { fontSize: 12, color: 'rgba(10,13,18,0.6)', lineHeight: 18 },
   txBadge:    { paddingHorizontal: 8, paddingVertical: 2, borderRadius: 9999, borderWidth: 1 },
   txBadgeBuy: { backgroundColor: '#eef7ee', borderColor: '#cbe7cc' },
   txBadgeSell:{ backgroundColor: '#fbf5f5', borderColor: '#f3d7d5' },
-  txBadgeTxt: { fontSize: 11, fontWeight: '600' },
+  txBadgeTxt: { fontSize: 12, fontWeight: '500' },
   txPct:      { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
   showMoreTxt:{ fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.6)', lineHeight: 20 },
 
   // ── Similar strategies ──
   similarCard: {
-    width: 200, height: 130, borderRadius: 14, overflow: 'hidden', position: 'relative',
-    padding: 14, justifyContent: 'space-between',
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.10)',
+    width: 240, height: 100, borderRadius: 8, overflow: 'hidden', position: 'relative',
+    borderWidth: 1, borderColor: 'rgba(0,0,0,0.09)',
   },
-  similarTitle:      { fontSize: 14, fontWeight: '600', color: '#ffffff', lineHeight: 20 },
-  similarDesc:       { fontSize: 11, color: 'rgba(255,255,255,0.65)', lineHeight: 16 },
-  similarReturn:     { fontSize: 16, fontWeight: '600', color: '#4ade80' },
-  similarReturnLabel:{ fontSize: 11, color: 'rgba(255,255,255,0.55)' },
+  similarContent: {
+    position: 'absolute', top: 0, bottom: 0, left: 15, right: 15,
+    justifyContent: 'center', gap: 8,
+  },
+  similarTitle:  { fontSize: 12, fontWeight: '500', color: '#ffffff', lineHeight: 18 },
+  similarReturn: { fontSize: 12, fontWeight: '500', color: '#72be7c', lineHeight: 18 },
+  similarPeriod: { fontSize: 12, color: '#d5d7da', lineHeight: 18 },
 
   // ── Trade bar ──
   tradeBar: {
