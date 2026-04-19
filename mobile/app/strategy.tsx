@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Platform,
   Animated,
+  TextInput,
   type ViewStyle,
 } from 'react-native';
 import { motion } from 'motion/react';
@@ -336,6 +337,176 @@ const SIMILAR_STRATEGIES = [
   { title: 'E-commerce Expansion',               returns: '+80.67%', bg: 'rgb(38,32,42)',   gradient: 'linear-gradient(270deg,rgba(38,32,42,0) 26%,rgb(38,32,42) 67%)'    },
 ];
 
+// ─── Share modal icons ────────────────────────────────────────────────────────
+function CloseIcon() {
+  return (
+    <View style={{ width: 20, height: 20 }}>
+      {/* @ts-ignore */}
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ display: 'block' }}>
+        {/* @ts-ignore */}
+        <path d="M15 5L5 15M5 5L15 15" stroke="#414651" strokeWidth="1.67" strokeLinecap="round" />
+      </svg>
+    </View>
+  );
+}
+function UploadIcon() {
+  return (
+    <View style={{ width: 20, height: 20 }}>
+      {/* @ts-ignore */}
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ display: 'block' }}>
+        {/* @ts-ignore */}
+        <path d="M10 2.5V13M10 2.5L6.5 6M10 2.5L13.5 6M4.5 12.5V15.5C4.5 16.052 4.948 16.5 5.5 16.5H14.5C15.052 16.5 15.5 16.052 15.5 15.5V12.5" stroke="#414651" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    </View>
+  );
+}
+function LinkIcon() {
+  return (
+    <View style={{ width: 20, height: 20 }}>
+      {/* @ts-ignore */}
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ display: 'block' }}>
+        {/* @ts-ignore */}
+        <path d="M11.25 16.25L10 17.5C8.067 19.433 4.933 19.433 3 17.5C1.067 15.567 1.067 12.433 3 10.5L4.25 9.25M15.75 10.75L17 9.5C18.933 7.567 18.933 4.433 17 2.5C15.067 0.567 11.933 0.567 10 2.5L8.75 3.75M7 13.5L13 6.5" stroke="#414651" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    </View>
+  );
+}
+function DownloadIcon() {
+  return (
+    <View style={{ width: 20, height: 20 }}>
+      {/* @ts-ignore */}
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ display: 'block' }}>
+        {/* @ts-ignore */}
+        <path d="M17.5 17.5H2.5M13.5 10L10 13.5M10 13.5L6.5 10M10 13.5V2.5" stroke="#414651" strokeWidth="1.67" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    </View>
+  );
+}
+
+function ActionBtn({ icon, label, onPress, active }: { icon: 'share'|'link'|'download'; label: string; onPress?: () => void; active?: boolean }) {
+  const Icon = icon === 'share' ? UploadIcon : icon === 'link' ? LinkIcon : DownloadIcon;
+  return (
+    <SpringPressable
+      style={[sm.actionBtn, active && sm.actionBtnActive]}
+      scaleTo={0.94}
+      onPress={onPress}
+      wrapStyle={{ flex: 1 }}
+    >
+      <Icon />
+      <T style={[sm.actionLabel, active && sm.actionLabelActive]}>{label}</T>
+    </SpringPressable>
+  );
+}
+
+function ShareCardChart() {
+  return (
+    <View style={{ width: 350, height: 180, overflow: 'hidden' }}>
+      {/* @ts-ignore */}
+      <svg width="350" height="180" viewBox="0 0 350 180" fill="none" style={{ display: 'block' }}>
+        {/* @ts-ignore */}
+        <path d="M 0 155 C 40 148 65 134 95 122 S 145 102 175 92 S 225 72 265 57 S 315 42 350 32 L 350 180 L 0 180 Z" fill="rgba(45,110,49,0.22)" />
+        {/* @ts-ignore */}
+        <path d="M 0 155 C 40 148 65 134 95 122 S 145 102 175 92 S 225 72 265 57 S 315 42 350 32" stroke="#2d6e31" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+        {/* @ts-ignore */}
+        <circle cx="350" cy="32" r="6" fill="rgba(45,110,49,0.22)" />
+        {/* @ts-ignore */}
+        <circle cx="350" cy="32" r="3.5" fill="#ffffff" />
+        {/* @ts-ignore */}
+        <circle cx="350" cy="32" r="2" fill="#2d6e31" />
+      </svg>
+    </View>
+  );
+}
+
+function ShareCardPreview({ take }: { take: string }) {
+  return (
+    <View style={sc.cardOuter}>
+      <View style={[StyleSheet.absoluteFillObject, { backgroundColor: '#2f1b00' }]} />
+      <View style={[StyleSheet.absoluteFillObject, { backgroundImage: 'linear-gradient(to bottom, rgba(47,27,0,0) 20%, rgba(47,27,0,0.97) 100%)' } as any]} />
+      {/* Top bar */}
+      <View style={sc.topBar}>
+        <View style={sc.sMark}>
+          <T style={sc.sMarkTxt}>S</T>
+        </View>
+        <View style={sc.returnBadge}>
+          <T style={sc.returnBadgeTxt}>+8.50% / year</T>
+        </View>
+      </View>
+      {/* Chart */}
+      <View style={sc.chartArea}>
+        <ShareCardChart />
+      </View>
+      {/* Bottom content */}
+      <View style={sc.bottomContent}>
+        <T style={sc.cardTitle}>Quantum Computing Leaders</T>
+        <T style={sc.cardDesc} numberOfLines={2}>A concentrated portfolio of companies at the forefront of quantum computing hardware and software.</T>
+        {take.trim() ? <T style={sc.cardTake}>"{take.trim()}"</T> : null}
+        <View style={sc.statsRow}>
+          <Text style={sc.statValue}>$96,622.77</Text>
+          <T style={sc.gainTxt}>+$2.25 (+0.56%)</T>
+        </View>
+        <View style={sc.divider} />
+        <T style={sc.footerTxt}>Shared via Surmount · Maya</T>
+      </View>
+    </View>
+  );
+}
+
+function ShareModal({ onDismiss }: { onDismiss: () => void }) {
+  const [take, setTake] = useState('');
+  const [copied, setCopied] = useState(false);
+  const [shared, setShared] = useState(false);
+  const MAX = 60;
+
+  function handleCopy() {
+    if (typeof navigator !== 'undefined') {
+      navigator.clipboard?.writeText('https://surmount.app/s/quantum-computing-leaders?sharedBy=Maya');
+    }
+    setCopied(true); setTimeout(() => setCopied(false), 2000);
+  }
+  function handleShare() {
+    setShared(true); setTimeout(() => setShared(false), 1500);
+  }
+
+  return (
+    <View style={sm.overlay}>
+      <View style={[StyleSheet.absoluteFillObject, sm.warmBg] as any} pointerEvents="none" />
+      <View style={s.statusSpacer} />
+      <View style={sm.navBar}>
+        <SpringPressable style={sm.closeBtn} scaleTo={0.82} onPress={onDismiss}>
+          <CloseIcon />
+        </SpringPressable>
+        <T style={sm.navTitle}>Share strategy</T>
+        <View style={{ width: 40 }} />
+      </View>
+      <ScrollView
+        contentContainerStyle={sm.content}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <ShareCardPreview take={take} />
+        <View style={sm.takeRow}>
+          <TextInput
+            style={sm.takeInput}
+            value={take}
+            onChangeText={t => setTake(t.slice(0, MAX))}
+            placeholder="Add your take (what caught your eye?)"
+            placeholderTextColor="rgba(0,0,0,0.30)"
+          />
+          <T style={[sm.takeCounter, MAX - take.length <= 10 && sm.takeCounterWarn]}>
+            {MAX - take.length}
+          </T>
+        </View>
+        <View style={sm.actionRow}>
+          <ActionBtn icon="share" label={shared ? 'Shared!' : 'Share'} onPress={handleShare} active={shared} />
+          <ActionBtn icon="link" label={copied ? 'Copied!' : 'Copy link'} onPress={handleCopy} active={copied} />
+          <ActionBtn icon="download" label="Download" />
+        </View>
+      </ScrollView>
+    </View>
+  );
+}
+
 // ─── Layout constants ─────────────────────────────────────────────────────────
 const HEADER_H = Platform.OS === 'ios' ? 100 : Platform.OS === 'web' ? 110 : 80;
 const BOTTOM_BAR_H = Platform.OS === 'ios' ? 96 : 84;
@@ -344,6 +515,7 @@ const BOTTOM_BAR_H = Platform.OS === 'ios' ? 96 : 84;
 export default function StrategyScreen() {
   const router = useRouter();
   const [period, setPeriod] = useState('24H');
+  const [showShare, setShowShare] = useState(false);
 
   return (
     <View style={s.root}>
@@ -356,7 +528,7 @@ export default function StrategyScreen() {
             <View style={GL1} /><View style={GL2} /><View style={GL3} />
             <BackChevron />
           </SpringPressable>
-          <SpringPressable style={[s.navGlassBtn, GLASS_PANEL]} scaleTo={0.82}>
+          <SpringPressable style={[s.navGlassBtn, GLASS_PANEL]} scaleTo={0.82} onPress={() => setShowShare(true)}>
             <View style={GL1} /><View style={GL2} /><View style={GL3} />
             <ShareIcon />
           </SpringPressable>
@@ -381,12 +553,6 @@ export default function StrategyScreen() {
           <View style={[StyleSheet.absoluteFillObject, { backgroundColor: '#2f1b00' } as any]} />
           {/* Warm brown gradient overlay — matches Figma from-[rgba(47,27,0,0)] to-[rgba(47,27,0,0.95)] */}
           <View style={[StyleSheet.absoluteFillObject, { backgroundImage: 'linear-gradient(to bottom, rgba(47,27,0,0) 6%, rgba(47,27,0,0.95) 100%)' } as any]} />
-          {/* Share button */}
-          <View style={s.heroShareWrap}>
-            <SpringPressable style={s.heroShareBtn} scaleTo={0.88}>
-              <T style={s.heroShareTxt}>Share</T>
-            </SpringPressable>
-          </View>
           {/* Title + description */}
           <View style={s.heroContent}>
             <T style={s.heroTitle}>Quantum Computing Leaders</T>
@@ -450,7 +616,7 @@ export default function StrategyScreen() {
                   // @ts-ignore
                   <motion.div
                     layoutId="strategy-period-indicator"
-                    style={{ position: 'absolute', inset: 0, borderRadius: 20, backgroundColor: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.10)' }}
+                    style={{ position: 'absolute', inset: 0, borderRadius: 24, backgroundColor: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.10)' }}
                     transition={{ type: 'spring', bounce: 0.18, duration: 0.38 }}
                   />
                 )}
@@ -666,6 +832,8 @@ export default function StrategyScreen() {
         </SpringPressable>
       </View>
 
+      {showShare && <ShareModal onDismiss={() => setShowShare(false)} />}
+
     </View>
   );
 }
@@ -697,13 +865,6 @@ const s = StyleSheet.create({
     height: 180, borderRadius: 8, overflow: 'hidden', position: 'relative',
     borderWidth: 1, borderColor: 'rgba(0,0,0,0.08)',
   },
-  heroShareWrap: { position: 'absolute', top: 12, right: 12, zIndex: 2 },
-  heroShareBtn: {
-    paddingHorizontal: 12, paddingVertical: 6,
-    backgroundColor: 'rgba(255,255,255,0.88)',
-    borderRadius: 8, borderWidth: 1, borderColor: 'rgba(0,0,0,0.10)',
-  },
-  heroShareTxt: { fontSize: 12, fontWeight: '500', color: 'rgba(10,13,18,0.8)' },
   heroContent: {
     position: 'absolute', bottom: 0, left: 0, right: 0,
     padding: 16, gap: 4,
@@ -731,7 +892,7 @@ const s = StyleSheet.create({
     paddingBottom: 12,
     backgroundColor: '#f5f4f2',
   },
-  valueBlock: { gap: 4, marginBottom: 12 },
+  valueBlock: { gap: 4, marginBottom: 20 },
   valueFull: {
     fontFamily: 'Inter', fontSize: 24, fontWeight: '500',
     color: 'rgba(10,13,18,0.9)', lineHeight: 32,
@@ -741,14 +902,14 @@ const s = StyleSheet.create({
 
   // ── Period bar (same as home.tsx) ──
   periodBar: {
-    flexDirection: 'row', alignItems: 'center', gap: 2,
+    flexDirection: 'row', alignItems: 'center', gap: 8,
     alignSelf: 'stretch', padding: 4,
     backgroundColor: 'rgba(47,48,50,0.05)',
     borderRadius: 24, marginTop: 8,
   },
-  periodBtn: { width: '100%', alignItems: 'center', paddingVertical: 6, borderRadius: 12, position: 'relative' },
-  periodTxt: { fontSize: 12, color: 'rgba(10,13,18,0.35)', lineHeight: 18, zIndex: 1, position: 'relative' },
-  periodTxtActive: { fontSize: 12, fontWeight: '500', color: '#1c1c1e', lineHeight: 18 },
+  periodBtn: { width: '100%', alignItems: 'center', paddingVertical: 4, borderRadius: 24, position: 'relative' },
+  periodTxt: { fontSize: 12, color: '#615e5c', lineHeight: 18, zIndex: 1, position: 'relative' },
+  periodTxtActive: { fontSize: 12, fontWeight: '500', color: '#32302f', lineHeight: 18 },
 
   // ── Sections ──
   section:      { marginTop: 24, gap: 16 },
@@ -848,4 +1009,88 @@ const s = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
   },
   tradeBtnTxt: { fontSize: 16, fontWeight: '500', color: '#ffffff' },
+});
+
+// ─── Share modal styles ───────────────────────────────────────────────────────
+const sm = StyleSheet.create({
+  overlay: {
+    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 200,
+    backgroundColor: '#f2f2f2',
+  },
+  warmBg: {
+    backgroundColor: 'rgba(254,232,200,0.50)',
+  },
+  navBar: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: 16, height: 52, zIndex: 1,
+  },
+  closeBtn: {
+    width: 40, height: 40, alignItems: 'center', justifyContent: 'center',
+  },
+  navTitle: { fontSize: 14, fontWeight: '500', color: '#181d27' },
+  content: {
+    paddingTop: 24, paddingBottom: 48, alignItems: 'center', gap: 20,
+  },
+  takeRow: {
+    width: 350, flexDirection: 'row', alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.75)',
+    borderWidth: 1, borderColor: 'rgba(0,0,0,0.06)',
+    borderRadius: 8, paddingHorizontal: 12, paddingVertical: 12, gap: 8,
+  },
+  takeInput: {
+    flex: 1, fontSize: 14, lineHeight: 20, color: '#181d27',
+    fontFamily: 'Geist', padding: 0, margin: 0,
+  } as any,
+  takeCounter: { fontSize: 12, color: 'rgba(0,0,0,0.30)', minWidth: 20, textAlign: 'right' },
+  takeCounterWarn: { color: '#d97706' },
+  actionRow: { flexDirection: 'row', gap: 8, width: 350 },
+  actionBtn: {
+    paddingVertical: 16,
+    backgroundColor: 'rgba(255,255,255,0.80)',
+    borderRadius: 10, borderWidth: 1, borderColor: 'rgba(0,0,0,0.04)',
+    alignItems: 'center', justifyContent: 'center', gap: 8, overflow: 'hidden',
+  },
+  actionBtnActive: { backgroundColor: 'rgba(64,106,208,0.10)', borderColor: 'rgba(64,106,208,0.20)' },
+  actionLabel: { fontSize: 12, color: 'rgba(10,13,18,0.9)', textAlign: 'center' },
+  actionLabelActive: { color: '#406AD0', fontWeight: '500' },
+});
+
+// ─── Share card styles ────────────────────────────────────────────────────────
+const sc = StyleSheet.create({
+  cardOuter: {
+    width: 350, height: 560, borderRadius: 16, overflow: 'hidden', position: 'relative',
+  },
+  topBar: {
+    position: 'absolute', top: 0, left: 0, right: 0, zIndex: 2,
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    padding: 20,
+  },
+  sMark: {
+    width: 32, height: 32, borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    alignItems: 'center', justifyContent: 'center',
+    borderWidth: 0.5, borderColor: 'rgba(255,255,255,0.25)',
+  },
+  sMarkTxt: { fontSize: 16, fontWeight: '500', color: '#ffffff' },
+  returnBadge: {
+    borderRadius: 9999, paddingHorizontal: 10, paddingVertical: 4,
+    backgroundColor: 'rgba(59,126,63,0.25)',
+    borderWidth: 0.5, borderColor: 'rgba(59,126,63,0.50)',
+  },
+  returnBadgeTxt: { fontSize: 12, fontWeight: '500', color: '#72be7c' },
+  chartArea: {
+    position: 'absolute', left: 0, right: 0, top: 120,
+  },
+  bottomContent: {
+    position: 'absolute', bottom: 0, left: 0, right: 0,
+    padding: 24, gap: 8,
+  },
+  cardTitle: { fontSize: 20, fontWeight: '500', color: '#ffffff', lineHeight: 28 },
+  cardDesc: { fontSize: 12, color: 'rgba(255,255,255,0.65)', lineHeight: 18 },
+  cardTake: { fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 18, fontStyle: 'italic', marginTop: 4 },
+  statsRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 4 },
+  statValue: { fontFamily: 'Inter', fontSize: 24, fontWeight: '500', color: '#ffffff' },
+  gainTxt: { fontSize: 14, fontWeight: '500', color: '#72be7c', lineHeight: 20 },
+  divider: { height: 0.5, backgroundColor: 'rgba(255,255,255,0.15)', marginVertical: 4 },
+  footerTxt: { fontSize: 12, color: 'rgba(255,255,255,0.45)' },
 });
