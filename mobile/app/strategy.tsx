@@ -701,8 +701,8 @@ const s = StyleSheet.create({
     position: 'absolute', bottom: 0, left: 0, right: 0,
     padding: 16, gap: 4,
   },
-  heroTitle: { fontSize: 17, fontWeight: '600', color: '#ffffff', lineHeight: 24 },
-  heroDesc:  { fontSize: 12, color: 'rgba(255,255,255,0.70)', lineHeight: 17 },
+  heroTitle: { fontSize: 18, fontWeight: '500', color: '#ffffff', lineHeight: 24 },
+  heroDesc:  { fontSize: 12, color: 'rgba(255,255,255,0.70)', lineHeight: 18 },
 
   // ── Stats pills ──
   pillsGrid: { marginTop: 12, gap: 8 },
@@ -712,7 +712,7 @@ const s = StyleSheet.create({
     borderWidth: 1, borderColor: 'rgba(0,0,0,0.07)',
     padding: 12, gap: 2,
   },
-  pillLabel: { fontSize: 11, color: '#717680', lineHeight: 16 },
+  pillLabel: { fontSize: 12, color: '#717680', lineHeight: 18 },
   pillValue: { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
 
   // ── Value + chart section — full-bleed gray background ──
@@ -741,10 +741,10 @@ const s = StyleSheet.create({
   },
   periodBtn: { width: '100%', alignItems: 'center', paddingVertical: 6, borderRadius: 12, position: 'relative' },
   periodTxt: { fontSize: 12, color: 'rgba(10,13,18,0.35)', lineHeight: 18, zIndex: 1, position: 'relative' },
-  periodTxtActive: { fontSize: 12, fontWeight: '600', color: '#1c1c1e', lineHeight: 18 },
+  periodTxtActive: { fontSize: 12, fontWeight: '500', color: '#1c1c1e', lineHeight: 18 },
 
   // ── Sections ──
-  section:      { marginTop: 28, gap: 12 },
+  section:      { marginTop: 24, gap: 16 },
   sectionTitle: { fontSize: 18, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 28 },
 
   // ── White card container ──
@@ -781,8 +781,8 @@ const s = StyleSheet.create({
   holdingLeft:         { position: 'absolute', left: 12, top: 8, bottom: 8, flexDirection: 'row', alignItems: 'center', gap: 8 },
   holdingAvatar:       { width: 24, height: 24, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(10,13,18,0.10)' },
   holdingAvatarFallback:{ alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.12)' },
-  holdingAvatarTxt:    { fontSize: 10, fontWeight: '700', color: 'rgba(10,13,18,0.8)' },
-  holdingTicker:       { fontSize: 14, fontWeight: '600', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
+  holdingAvatarTxt:    { fontSize: 10, fontWeight: '500', color: 'rgba(10,13,18,0.8)' },
+  holdingTicker:       { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
   holdingPct:          { position: 'absolute', right: 12, top: 0, bottom: 0, textAlignVertical: 'center', fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.8)', lineHeight: 40 },
 
   // ── Industries ──
@@ -795,7 +795,7 @@ const s = StyleSheet.create({
 
   // ── Recent transactions ──
   txCircle:   { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center', flexShrink: 0, borderWidth: 0.5, borderColor: 'rgba(0,0,0,0.08)' },
-  txInitial:  { fontSize: 9, fontWeight: '700' },
+  txInitial:  { fontSize: 10, fontWeight: '500' },
   txTicker:   { fontSize: 14, fontWeight: '500', color: '#414651', lineHeight: 20 },
   txDate:     { fontSize: 12, color: 'rgba(10,13,18,0.6)', lineHeight: 18 },
   txBadge:    { paddingHorizontal: 8, paddingVertical: 2, borderRadius: 9999, borderWidth: 1 },
@@ -811,7 +811,7 @@ const s = StyleSheet.create({
     borderWidth: 1, borderColor: 'rgba(0,0,0,0.09)',
   },
   similarContent: {
-    position: 'absolute', top: 0, bottom: 0, left: 15, right: 15,
+    position: 'absolute', top: 0, bottom: 0, left: 16, right: 16,
     justifyContent: 'center', gap: 8,
   },
   similarTitle:  { fontSize: 12, fontWeight: '500', color: '#ffffff', lineHeight: 18 },
@@ -833,12 +833,12 @@ const s = StyleSheet.create({
     borderWidth: 1, borderColor: 'rgba(0,0,0,0.07)',
     paddingHorizontal: 12, paddingVertical: 8,
   },
-  brokerName:  { fontSize: 13, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 18 },
-  brokerValue: { fontSize: 12, color: '#717680', lineHeight: 16 },
+  brokerName:  { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
+  brokerValue: { fontSize: 12, color: '#717680', lineHeight: 18 },
   tradeBtn: {
     backgroundColor: '#0a0d12', borderRadius: 12,
-    paddingHorizontal: 28, paddingVertical: 14,
+    paddingHorizontal: 24, paddingVertical: 14,
     alignItems: 'center', justifyContent: 'center',
   },
-  tradeBtnTxt: { fontSize: 15, fontWeight: '600', color: '#ffffff' },
+  tradeBtnTxt: { fontSize: 16, fontWeight: '500', color: '#ffffff' },
 });
