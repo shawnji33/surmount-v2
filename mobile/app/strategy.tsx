@@ -1088,7 +1088,7 @@ const s = StyleSheet.create({
 const sm = StyleSheet.create({
   overlay: {
     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 200,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#0f1117',
   },
   warmBg: {
     backgroundColor: 'rgba(254,232,200,0.50)',

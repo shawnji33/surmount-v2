@@ -6,7 +6,7 @@ import { colors } from '../constants/tokens';
 export default function RootLayout() {
   return (
     <View style={styles.root}>
-      <StatusBar style="dark" backgroundColor={colors.bgPrimary} />
+      <StatusBar style="light" backgroundColor="#0f1117" />
       <Stack screenOptions={{ headerShown: false }} />
     </View>
   );
@@ -15,6 +15,6 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: colors.bgPrimary,
+    backgroundColor: '#0f1117',
   },
 });

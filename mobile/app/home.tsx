@@ -729,7 +729,7 @@ export default function HomeScreen() {
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
 const s = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#fcfcfc' },
+  root: { flex: 1, backgroundColor: '#0f1117' },
   scroll: { flex: 1 },
 
   // ── Header — transparent shell, each element is its own glass container ──
