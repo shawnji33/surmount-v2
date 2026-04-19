@@ -886,11 +886,8 @@ const s = StyleSheet.create({
   // ── Value + chart section — full-bleed gray background ──
   chartSection: {
     marginTop: 20,
-    marginHorizontal: -16,
-    paddingHorizontal: 16,
     paddingTop: 20,
     paddingBottom: 12,
-    backgroundColor: '#f5f4f2',
   },
   valueBlock: { gap: 4, marginBottom: 20 },
   valueFull: {
