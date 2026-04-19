@@ -11,10 +11,6 @@ import {
 import { colors, spacing, radius, fontSize, fontWeight, lineHeight } from '../constants/tokens';
 
 // ─── Assets via public/ static directory ──────────────────────────────────────
-// Served at /surmount-v2/mobile/assets/ on GitHub Pages.
-// Metro static export doesn't reliably bundle require() assets,
-// so we serve them as static files from the public/ directory instead.
-
 const BASE = '/surmount-v2/mobile/assets';
 const u = (path: string) => ({ uri: `${BASE}/${path}` });
 
@@ -61,10 +57,8 @@ const Avatars = {
 };
 
 // ─── Img primitive ────────────────────────────────────────────────────────────
-// React Native Web's <Image> uses CSS background-image via computed atomic CSS
-// classes. In Expo's static SSR export those classes render with empty URLs.
-// Using View + backgroundImage inline style instead — inline styles ARE emitted
-// into the SSR HTML immediately, so images appear without waiting for JS.
+// RNW's Image uses atomic CSS background-image which renders empty in SSR.
+// Inline backgroundImage style IS emitted immediately in SSR HTML.
 
 type ImgProps = {
   source: { uri: string };
@@ -78,7 +72,7 @@ function Img({ source, style, contentFit = 'cover' }: ImgProps) {
     <View
       style={[
         style,
-        // @ts-ignore — React Native Web passes unknown CSS props through to the DOM
+        // @ts-ignore — RNW passes unknown CSS props through as inline styles
         {
           backgroundImage: `url('${source.uri}')`,
           backgroundSize: bsMap[contentFit],
@@ -146,8 +140,10 @@ function T({ style, ...p }: React.ComponentProps<typeof Text>) {
   return <Text style={[{ fontFamily: 'Geist' }, style]} {...p} />;
 }
 
-function Divider({ indent = true }: { indent?: boolean }) {
-  return <View style={[s.divider, !indent && { width: '100%' }]} />;
+function Divider() {
+  return (
+    <View style={s.divider} />
+  );
 }
 
 function CircleAvatar({ source, size = 32 }: { source: any; size?: number }) {
@@ -195,6 +191,8 @@ function RowMeta({ brokerAvatars, label }: { brokerAvatars: any[]; label: string
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
 const HEADER_H = Platform.OS === 'ios' ? 112 : 90;
+// Figma outer container has p-[16px] on all sides; top aligns to header bottom.
+const SCROLL_TOP = HEADER_H + 16;
 
 export default function HomeScreen() {
   const [period, setPeriod] = useState('1D');
@@ -204,32 +202,37 @@ export default function HomeScreen() {
     <View style={s.root}>
       <ScrollView
         style={s.scroll}
-        contentContainerStyle={{ paddingTop: HEADER_H, paddingBottom: 40 }}
+        contentContainerStyle={{ paddingTop: SCROLL_TOP, paddingBottom: 40, paddingHorizontal: 16 }}
         showsVerticalScrollIndicator={false}
       >
 
-        {/* ── Portfolio hero ── */}
+        {/* ── Hero section (gap-14) ── */}
         <View style={s.hero}>
 
-          {/* Surmount Pro badge */}
-          <View style={s.proPill}>
-            <Img source={Images.proBadgeBg} style={StyleSheet.absoluteFillObject} contentFit="cover" />
-            <View style={s.proGearWrap}>
-              <Img source={Images.proBadgeGear} style={StyleSheet.absoluteFillObject} contentFit="contain" />
+          {/* Pro badge + value block (gap-8 between them, per Figma 11015:83681) */}
+          <View style={{ gap: 8, alignItems: 'center' }}>
+
+            {/* Surmount Pro badge */}
+            <View style={s.proPill}>
+              <Img source={Images.proBadgeBg} style={StyleSheet.absoluteFillObject} contentFit="cover" />
+              <View style={s.proGearWrap}>
+                <Img source={Images.proBadgeGear} style={StyleSheet.absoluteFillObject} contentFit="contain" />
+              </View>
+              <T style={s.proLabel}>Surmount Pro</T>
             </View>
-            <T style={s.proLabel}>Surmount Pro</T>
+
+            {/* Portfolio value (gap-6 between value and gain) */}
+            <View style={{ gap: 6, alignItems: 'center' }}>
+              {/* Value with cents in lighter color */}
+              <View style={{ flexDirection: 'row', alignItems: 'baseline' }}>
+                <Text style={s.portfolioValue}>$2,234,678</Text>
+                <Text style={s.portfolioValueCents}>.92</Text>
+              </View>
+              <T style={s.portfolioGain}>+$633.63 (+2.42%) this week</T>
+            </View>
           </View>
 
-          {/* Portfolio value */}
-          <View style={s.valueWrap}>
-            <View style={s.portfolioValueRow}>
-              <Img source={Images.portfolioValueBg} style={StyleSheet.absoluteFillObject} contentFit="cover" />
-              <Text style={s.portfolioValue}>$2,234,678.92</Text>
-            </View>
-            <T style={s.portfolioGain}>+$633.63 (+2.42%) this week</T>
-          </View>
-
-          {/* Chart — full width 390×237 */}
+          {/* Chart — full width, breaks out of paddingHorizontal: 16 */}
           <View style={s.chart}>
             <Img source={Images.chartFill} style={[StyleSheet.absoluteFillObject, { width: '100%', height: '100%' }]} contentFit="fill" />
             <Img source={Images.chartLine} style={[StyleSheet.absoluteFillObject, { width: '100%', height: '100%' }]} contentFit="fill" />
@@ -245,7 +248,7 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* ── Quick actions ── */}
+        {/* ── Quick actions (24px gap from hero via scroll container gap) ── */}
         <View style={s.quickRow}>
           <Pressable style={s.quickCard}>
             <Img source={Icons.plus} style={s.quickIcon} contentFit="contain" />
@@ -257,9 +260,8 @@ export default function HomeScreen() {
           </Pressable>
         </View>
 
-        {/* ── Holdings ── */}
-        <View style={s.section}>
-          {/* Header */}
+        {/* ── Holdings (24px from quick actions, then 52px between sections) ── */}
+        <View style={[s.section, { marginTop: 24 }]}>
           <View style={s.sectionHead}>
             <T style={s.sectionTitle}>Holdings</T>
             <View style={{ transform: [{ rotate: '-90deg' }] }}>
@@ -267,7 +269,6 @@ export default function HomeScreen() {
             </View>
           </View>
 
-          {/* Tabs — button-border style from DS */}
           <View style={s.tabRow}>
             {['All', 'Assets', 'Strategies'].map(t => (
               <Pressable key={t} style={[s.tabBtn, tab === t && s.tabBtnActive]} onPress={() => setTab(t)}>
@@ -276,64 +277,75 @@ export default function HomeScreen() {
             ))}
           </View>
 
-          {/* Holding rows */}
-          {HOLDINGS.map((item, i) => (
-            <View key={item.id}>
-              <View style={s.listRow}>
-                <CircleAvatar source={item.avatar} size={32} />
-                <View style={s.listMid}>
-                  <T style={s.listName}>{item.name}</T>
-                  <RowMeta brokerAvatars={item.brokerAvatars} label={item.label} />
+          {/* Rows in own container — section gap-16 won't apply to each individual row */}
+          <View>
+            {HOLDINGS.map((item, i) => (
+              <View key={item.id}>
+                <View style={s.listRow}>
+                  <CircleAvatar source={item.avatar} size={32} />
+                  <View style={s.listMid}>
+                    <T style={s.listName}>{item.name}</T>
+                    <RowMeta brokerAvatars={item.brokerAvatars} label={item.label} />
+                  </View>
+                  <View style={s.listRight}>
+                    <T style={s.listValue}>{item.value}</T>
+                    <T style={s.changeGreen}>{item.change}</T>
+                  </View>
                 </View>
-                <View style={s.listRight}>
-                  <T style={s.listValue}>{item.value}</T>
-                  <T style={s.changeGreen}>{item.change}</T>
-                </View>
+                {i < HOLDINGS.length - 1 && <Divider />}
               </View>
-              {i < HOLDINGS.length - 1 && <Divider />}
-            </View>
-          ))}
+            ))}
+          </View>
         </View>
 
         {/* ── Recent activity ── */}
         <View style={s.section}>
           <T style={s.sectionTitle}>Recent activity</T>
-          <T style={s.dateLabel}>January 21, 2026</T>
 
-          {ACTIVITY.map((item, i) => (
-            <View key={item.id}>
-              <View style={s.listRow}>
-                {item.isSystem ? (
-                  <View style={s.systemCircle}>
-                    <Img source={item.icon} style={{ width: 16, height: 16 }} contentFit="contain" />
+          {/* gap-24 between date group and view-all button */}
+          <View style={{ gap: 24 }}>
+            {/* gap-12 between date label and rows */}
+            <View style={{ gap: 12 }}>
+              <T style={s.dateLabel}>January 21, 2026</T>
+              <View>
+                {ACTIVITY.map((item, i) => (
+                  <View key={item.id}>
+                    <View style={s.listRow}>
+                      {item.isSystem ? (
+                        <View style={s.systemCircle}>
+                          <Img source={item.icon} style={{ width: 16, height: 16 }} contentFit="contain" />
+                        </View>
+                      ) : (
+                        <CircleAvatar source={item.avatar} size={32} />
+                      )}
+                      <View style={s.listMid}>
+                        <T style={s.listName}>{item.name}</T>
+                        <RowMeta brokerAvatars={[item.brokerAvatar]} label={item.label} />
+                      </View>
+                      <View style={s.listRight}>
+                        <T style={s.listValue}>{item.amount}</T>
+                        {!!item.type && <T style={s.activityType}>{item.type}</T>}
+                      </View>
+                    </View>
+                    {i < ACTIVITY.length - 1 && <Divider />}
                   </View>
-                ) : (
-                  <CircleAvatar source={item.avatar} size={32} />
-                )}
-                <View style={s.listMid}>
-                  <T style={s.listName}>{item.name}</T>
-                  <RowMeta brokerAvatars={[item.brokerAvatar]} label={item.label} />
-                </View>
-                <View style={s.listRight}>
-                  <T style={s.listValue}>{item.amount}</T>
-                  {!!item.type && <T style={s.activityType}>{item.type}</T>}
-                </View>
+                ))}
               </View>
-              {i < ACTIVITY.length - 1 && <Divider />}
             </View>
-          ))}
 
-          <Pressable style={s.viewAllBtn}>
-            <T style={s.viewAllTxt}>View all</T>
-          </Pressable>
+            <Pressable style={s.viewAllBtn}>
+              <T style={s.viewAllTxt}>View all</T>
+            </Pressable>
+          </View>
         </View>
 
         {/* ── Daily news ── */}
         <View style={s.section}>
           <T style={s.sectionTitle}>Daily news</T>
-          {NEWS.map((item, i) => (
-            <View key={item.id}>
-              <View style={s.newsRow}>
+          {/* gap-16 between news items, no dividers */}
+          <View style={{ gap: 16 }}>
+            {NEWS.map(item => (
+              <View key={item.id} style={s.newsRow}>
                 <View style={s.newsBody}>
                   <T style={s.newsSource}>{item.source}</T>
                   <T style={s.newsHeadline}>{item.headline}</T>
@@ -341,9 +353,8 @@ export default function HomeScreen() {
                 </View>
                 <View style={s.newsThumb} />
               </View>
-              {i < NEWS.length - 1 && <Divider indent={false} />}
-            </View>
-          ))}
+            ))}
+          </View>
         </View>
 
         {/* ── For you ── */}
@@ -352,40 +363,46 @@ export default function HomeScreen() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            style={{ marginHorizontal: -spacing.xl }}
-            contentContainerStyle={{ paddingHorizontal: spacing.xl, gap: 20 }}
+            style={{ marginHorizontal: -16 }}
+            contentContainerStyle={{ paddingHorizontal: 16, gap: 20 }}
           >
-            {/* ETF Portfolios */}
+            {/* ETF Portfolios — image at left:235 top:64 w:131 h:90 */}
             <View style={[s.card, { backgroundColor: '#ecf3f7' }]}>
               <View style={s.cardInfo}>
-                <T style={s.cardTitle}>ETF Portfolios</T>
-                <T style={s.cardDesc}>Classic portfolios made up of ETFs.</T>
+                <View style={{ gap: 2 }}>
+                  <T style={s.cardTitle}>ETF Portfolios</T>
+                  <T style={s.cardDesc}>Classic portfolios made up of ETFs.</T>
+                </View>
                 <View style={s.cardBadges}>
                   <BadgePill icon={Icons.dollarCircle} label="Up to 9%" />
                   <BadgePill label="Risk level: 2/5" />
                 </View>
               </View>
-              <Img source={Images.cardEtf} style={s.cardImg} contentFit="contain" />
+              <Img source={Images.cardEtf} style={s.cardImgEtf} contentFit="contain" />
             </View>
 
-            {/* Direct indexing */}
+            {/* Direct indexing — image at left:225 top:46 w:172 h:117 */}
             <View style={[s.card, { backgroundColor: '#f1f4e8' }]}>
               <View style={s.cardInfo}>
-                <T style={s.cardTitle}>Direct indexing</T>
-                <T style={s.cardDesc}>Own the market, minimize your taxes.</T>
+                <View style={{ gap: 2 }}>
+                  <T style={s.cardTitle}>Direct indexing</T>
+                  <T style={s.cardDesc}>Own the market, minimize your taxes.</T>
+                </View>
                 <View style={s.cardBadges}>
                   <BadgePill icon={Icons.dollarCircle} label="Up to 14%" />
                   <BadgePill label="Risk level: 4/5" />
                 </View>
               </View>
-              <Img source={Images.cardDirectIdx} style={s.cardImg} contentFit="contain" />
+              <Img source={Images.cardDirectIdx} style={s.cardImgDirect} contentFit="contain" />
             </View>
 
-            {/* Referral */}
+            {/* Referral — image at left:261 centered+34px offset, w:96 h:96 */}
             <View style={[s.card, { backgroundColor: '#f4f3ee' }]}>
               <View style={[s.cardInfo, { width: 220 }]}>
-                <T style={s.cardTitle}>Earn up to $10,000 USD for referral</T>
-                <T style={s.cardDesc}>Join our referral program to earn up to $10,000 by inviting friends!</T>
+                <View style={{ gap: 2 }}>
+                  <T style={s.cardTitle}>Earn up to $10,000 USD for referral</T>
+                  <T style={s.cardDesc}>Join our referral program to earn up to $10,000 by inviting friends!</T>
+                </View>
               </View>
               <Img source={Images.cardReferral} style={s.cardImgReferral} contentFit="contain" />
             </View>
@@ -396,14 +413,11 @@ export default function HomeScreen() {
 
       {/* ── Fixed header ── */}
       <View style={s.header} pointerEvents="box-none">
-        {/* Status bar spacer */}
         <View style={s.statusSpacer} />
 
-        {/* Nav bar */}
         <View style={s.navBar}>
           {/* Portfolio selector pill */}
           <Pressable style={s.portfolioPill}>
-            {/* Luminosity gradient overlay */}
             <View style={s.pillGradient} />
             <CircleAvatar source={Avatars.user} size={20} />
             <T style={s.pillTxt}>All Portfolios</T>
@@ -417,7 +431,6 @@ export default function HomeScreen() {
             </Pressable>
             <Pressable style={s.iconBtn}>
               <Img source={Icons.bell} style={s.navIcon} contentFit="contain" />
-              {/* Notification dot */}
               <View style={s.notifDot}>
                 <Img source={Icons.dot} style={{ width: 6, height: 6 }} contentFit="contain" />
               </View>
@@ -454,18 +467,17 @@ const s = StyleSheet.create({
     paddingVertical: 6, paddingHorizontal: 8,
     borderRadius: 35, borderWidth: 1, borderColor: 'rgba(0,0,0,0.09)',
     overflow: 'hidden', position: 'relative',
+    shadowColor: '#0a0d12', shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.02, shadowRadius: 10, elevation: 1,
   },
   pillGradient: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: 35,
-    // Simulated luminosity gradient from Figma
     backgroundColor: '#f5f5f5',
     opacity: 0.6,
   },
-  pillTxt: {
-    fontSize: 14, fontWeight: '500', color: '#414651', letterSpacing: -0.3,
-  },
-  pillChevron: { width: 16, height: 16, opacity: 0.5 },
+  pillTxt: { fontSize: 14, fontWeight: '500', color: '#414651' },
+  pillChevron: { width: 20, height: 20, opacity: 0.6 },
   navIcons: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   iconBtn: {
     width: 32, height: 32, alignItems: 'center', justifyContent: 'center',
@@ -473,58 +485,56 @@ const s = StyleSheet.create({
   },
   navIcon: { width: 20, height: 20 },
   notifDot: {
-    position: 'absolute', top: 5, right: 4,
+    position: 'absolute', top: 4, right: 3,
     width: 8, height: 8, alignItems: 'center', justifyContent: 'center',
   },
 
-  // ── Hero ──
+  // ── Hero (gap: 14 between inner pro+value block, chart, period bar) ──
   hero: {
-    alignItems: 'center', gap: 8,
-    paddingTop: 24, paddingHorizontal: 16,
+    alignItems: 'center',
+    gap: 14,
   },
   proPill: {
     flexDirection: 'row', alignItems: 'center', alignSelf: 'center',
     gap: 4, paddingLeft: 6, paddingRight: 10, paddingVertical: 4,
     borderRadius: 35, borderWidth: 1, borderColor: 'rgba(0,0,0,0.10)',
     overflow: 'hidden', position: 'relative',
+    shadowColor: '#0a0d12', shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05, shadowRadius: 2, elevation: 1,
   },
   proGearWrap: {
     width: 20, height: 20,
     overflow: 'hidden', position: 'relative',
   },
-  proLabel: {
-    fontSize: 12, fontWeight: '500', color: 'rgba(10,13,18,0.7)', letterSpacing: -0.2,
-  },
-  valueWrap: { alignItems: 'center', gap: 6, marginTop: 6 },
-  portfolioValueRow: {
-    position: 'relative', overflow: 'hidden',
-    alignSelf: 'center',
-  },
+  proLabel: { fontSize: 12, fontWeight: '500', color: 'rgba(10,13,18,0.7)' },
+
+  // Portfolio value — main text dark, cents lighter
   portfolioValue: {
     fontFamily: 'Inter', fontSize: 24, fontWeight: '500',
-    color: 'rgba(10,13,18,0.9)', letterSpacing: -0.5, lineHeight: 32,
+    color: 'rgba(10,13,18,0.9)', lineHeight: 32,
+  },
+  portfolioValueCents: {
+    fontFamily: 'Inter', fontSize: 24, fontWeight: '500',
+    color: 'rgba(10,13,18,0.4)', lineHeight: 32,
   },
   portfolioGain: {
-    fontSize: 14, fontWeight: '500', color: '#3b7e3f',
-    letterSpacing: -0.3, lineHeight: 20,
+    fontSize: 14, fontWeight: '500', color: '#3b7e3f', lineHeight: 20,
   },
 
   // ── Chart ──
   chart: {
     width: 390, height: 237,
-    marginHorizontal: -16, alignSelf: 'stretch',
-    marginTop: 8, position: 'relative',
+    marginHorizontal: -16,
+    position: 'relative',
   },
 
   // ── Period bar ──
   periodBar: {
     flexDirection: 'row', alignItems: 'center', gap: 4,
     backgroundColor: '#f5f5f5', borderRadius: 16, padding: 4,
-    marginTop: 8,
+    alignSelf: 'stretch',
   },
-  periodBtn: {
-    paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12,
-  },
+  periodBtn: { flex: 1, alignItems: 'center', paddingVertical: 4, borderRadius: 12 },
   periodBtnActive: { backgroundColor: '#fafafa' },
   periodTxt: { fontSize: 12, color: 'rgba(10,13,18,0.5)', lineHeight: 18 },
   periodTxtActive: { color: 'rgba(10,13,18,0.9)' },
@@ -532,7 +542,7 @@ const s = StyleSheet.create({
   // ── Quick actions ──
   quickRow: {
     flexDirection: 'row', gap: 12,
-    paddingHorizontal: 16, marginTop: 24,
+    marginTop: 24,
   },
   quickCard: {
     flex: 1, backgroundColor: '#f5f5f5', borderRadius: 10,
@@ -540,51 +550,41 @@ const s = StyleSheet.create({
     padding: 16, gap: 8, overflow: 'hidden',
   },
   quickIcon: { width: 20, height: 20 },
-  quickLabel: {
-    fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.7)',
-    letterSpacing: -0.3, lineHeight: 20,
-  },
+  quickLabel: { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.7)', lineHeight: 20 },
 
   // ── Sections ──
-  section: { marginTop: 52, paddingHorizontal: 16, gap: 16 },
+  // gap: 16 applies between sectionHead/tabs/row-container — correct since rows are wrapped
+  section: { marginTop: 52, gap: 16 },
   sectionHead: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  sectionTitle: {
-    fontSize: 18, fontWeight: '500', color: 'rgba(10,13,18,0.9)',
-    letterSpacing: -0.3, lineHeight: 28,
-  },
-  dateLabel: {
-    fontSize: 12, fontWeight: '500', color: 'rgba(10,13,18,0.6)',
-    letterSpacing: -0.2, lineHeight: 18,
-  },
+  sectionTitle: { fontSize: 18, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 28 },
+  dateLabel: { fontSize: 12, fontWeight: '500', color: 'rgba(10,13,18,0.6)', lineHeight: 18 },
 
-  // ── Holdings tabs (button-border DS style) ──
+  // ── Holdings tabs ──
   tabRow: { flexDirection: 'row', gap: 4 },
   tabBtn: {
     flex: 1, height: 36, alignItems: 'center', justifyContent: 'center',
-    borderRadius: 8, overflow: 'hidden',
+    borderRadius: 8,
   },
-  tabBtnActive: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1, borderColor: 'rgba(0,0,0,0.09)',
-  },
-  tabTxt: {
-    fontSize: 14, fontWeight: '500', color: '#717680', letterSpacing: -0.3,
-  },
+  tabBtnActive: { backgroundColor: '#ffffff', borderWidth: 1, borderColor: 'rgba(0,0,0,0.09)' },
+  tabTxt: { fontSize: 14, fontWeight: '500', color: '#717680' },
   tabTxtActive: { color: '#414651' },
 
   // ── List rows ──
-  listRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 2 },
+  listRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   listMid: { flex: 1, gap: 4 },
-  listName: { fontSize: 14, color: 'rgba(10,13,18,0.9)', letterSpacing: -0.3, lineHeight: 20 },
+  listName: { fontSize: 14, color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
   rowMeta: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  rowSub: { fontSize: 12, color: '#535862', letterSpacing: -0.2, lineHeight: 16 },
+  rowSub: { fontSize: 12, color: '#535862', lineHeight: 16 },
   listRight: { alignItems: 'flex-end', gap: 2 },
-  listValue: { fontSize: 14, color: 'rgba(10,13,18,0.9)', letterSpacing: -0.3, lineHeight: 20 },
-  changeGreen: { fontSize: 12, color: '#3b7e3f', letterSpacing: -0.2, lineHeight: 18 },
-  activityType: { fontSize: 12, color: '#535862', letterSpacing: -0.2, lineHeight: 18 },
+  listValue: { fontSize: 14, color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
+  changeGreen: { fontSize: 12, color: '#3b7e3f', lineHeight: 18 },
+  activityType: { fontSize: 12, color: '#535862', lineHeight: 18 },
+
+  // Divider: right-aligned, 12px above and below
   divider: {
     height: 1, backgroundColor: 'rgba(0,0,0,0.06)',
-    marginVertical: 12, alignSelf: 'flex-end', width: '85%',
+    marginTop: 12, marginBottom: 12,
+    alignSelf: 'flex-end', width: '86%',
   },
   systemCircle: {
     width: 32, height: 32, borderRadius: 16,
@@ -598,23 +598,17 @@ const s = StyleSheet.create({
     borderWidth: 1, borderColor: 'rgba(0,0,0,0.09)',
     alignItems: 'center', justifyContent: 'center',
   },
-  viewAllTxt: {
-    fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.7)', letterSpacing: -0.3,
-  },
+  viewAllTxt: { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.7)' },
 
   // ── News ──
   newsRow: {
-    flexDirection: 'row', alignItems: 'flex-start',
-    justifyContent: 'space-between', paddingVertical: 6,
+    flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between',
   },
   newsBody: { flex: 1, gap: 4, paddingRight: 16 },
   newsSource: { fontSize: 12, fontWeight: '500', color: 'rgba(10,13,18,0.6)', lineHeight: 18 },
-  newsHeadline: { fontSize: 14, color: 'rgba(10,13,18,0.9)', letterSpacing: -0.3, lineHeight: 20 },
+  newsHeadline: { fontSize: 14, color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
   newsTime: { fontSize: 12, color: 'rgba(10,13,18,0.6)', lineHeight: 18 },
-  newsThumb: {
-    width: 60, height: 60, borderRadius: 8, flexShrink: 0,
-    backgroundColor: '#717680',
-  },
+  newsThumb: { width: 60, height: 60, borderRadius: 8, flexShrink: 0, backgroundColor: '#666' },
 
   // ── For you cards ──
   card: {
@@ -622,14 +616,18 @@ const s = StyleSheet.create({
     borderWidth: 1, borderColor: 'rgba(0,0,0,0.09)',
     paddingHorizontal: 20, paddingVertical: 32,
     flexDirection: 'row', alignItems: 'center',
-    overflow: 'hidden', gap: 12,
+    overflow: 'hidden',
   },
   cardInfo: { flex: 1, gap: 12 },
-  cardTitle: { fontSize: 16, fontWeight: '500', color: 'rgba(10,13,18,0.9)', letterSpacing: -0.3, lineHeight: 24 },
-  cardDesc: { fontSize: 14, color: 'rgba(10,13,18,0.6)', letterSpacing: -0.3, lineHeight: 20 },
+  cardTitle: { fontSize: 16, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 24 },
+  cardDesc: { fontSize: 14, color: 'rgba(10,13,18,0.6)', lineHeight: 20 },
   cardBadges: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
-  cardImg: { position: 'absolute', right: -10, bottom: 0, width: 131, height: 131 },
-  cardImgReferral: { position: 'absolute', right: -10, top: '50%', width: 96, height: 96, transform: [{ translateY: -48 }] },
+  // ETF card: image at left:235 top:64 w:131 h:90
+  cardImgEtf: { position: 'absolute', left: 235, top: 64, width: 131, height: 90 },
+  // Direct indexing card: image at left:225 top:46 w:172 h:117
+  cardImgDirect: { position: 'absolute', left: 225, top: 46, width: 172, height: 117 },
+  // Referral card: image at left:261 vertically centered+34px offset w:96 h:96
+  cardImgReferral: { position: 'absolute', left: 261, top: 50, width: 96, height: 96 },
 
   // ── Badges ──
   badge: {
@@ -637,5 +635,5 @@ const s = StyleSheet.create({
     paddingLeft: 6, paddingRight: 8, paddingVertical: 2,
     borderRadius: 9999, borderWidth: 1, borderColor: '#e9eaeb', backgroundColor: '#fafafa',
   },
-  badgeTxt: { fontSize: 12, fontWeight: '500', color: '#414651', letterSpacing: -0.2 },
+  badgeTxt: { fontSize: 12, fontWeight: '500', color: '#414651' },
 });
