@@ -18,6 +18,7 @@ export default function Root({ children }: { children: React.ReactNode }) {
         <style>{`
           *, *::before, *::after { box-sizing: border-box; }
           html, body { height: 100%; margin: 0; padding: 0; }
+          * { letter-spacing: -0.5px; }
 
           /* ── Mobile: plain white canvas ── */
           html, body, #root { background-color: #fcfcfc; }

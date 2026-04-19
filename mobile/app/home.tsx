@@ -481,7 +481,10 @@ export default function HomeScreen() {
                 <Text style={s.portfolioValue}>$2,234,678</Text>
                 <Text style={s.portfolioValueCents}>.92</Text>
               </View>
-              <T style={s.portfolioGain}>+$633.63 (+2.42%) this week</T>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <T style={s.portfolioGain}>+$633.63 (+2.42%)</T>
+                <T style={s.portfolioGainPeriod}>this week</T>
+              </View>
             </View>
           </View>
 
@@ -496,7 +499,7 @@ export default function HomeScreen() {
                   <motion.div
                     layoutId="period-indicator"
                     style={{
-                      position: 'absolute', inset: 0, borderRadius: 12,
+                      position: 'absolute', inset: 0, borderRadius: 20,
                       backgroundColor: '#ffffff',
                       boxShadow: '0 1px 4px rgba(0,0,0,0.10)',
                     }}
@@ -552,17 +555,19 @@ export default function HomeScreen() {
           <View>
             {HOLDINGS.map((item, i) => (
               <View key={item.id}>
-                <View style={s.listRow}>
-                  <CircleAvatar source={item.avatar} size={32} />
-                  <View style={s.listMid}>
-                    <T style={s.listName}>{item.name}</T>
-                    <RowMeta brokerAvatars={item.brokerAvatars} label={item.label} />
+                <SpringPressable scaleTo={0.98} style={s.listRowPressable}>
+                  <View style={s.listRow}>
+                    <CircleAvatar source={item.avatar} size={32} />
+                    <View style={s.listMid}>
+                      <T style={s.listName}>{item.name}</T>
+                      <RowMeta brokerAvatars={item.brokerAvatars} label={item.label} />
+                    </View>
+                    <View style={s.listRight}>
+                      <T style={s.listValue}>{item.value}</T>
+                      <T style={s.changeGreen}>{item.change}</T>
+                    </View>
                   </View>
-                  <View style={s.listRight}>
-                    <T style={s.listValue}>{item.value}</T>
-                    <T style={s.changeGreen}>{item.change}</T>
-                  </View>
-                </View>
+                </SpringPressable>
                 {i < HOLDINGS.length - 1 && <Divider />}
               </View>
             ))}
@@ -581,23 +586,25 @@ export default function HomeScreen() {
               <View>
                 {ACTIVITY.map((item, i) => (
                   <View key={item.id}>
-                    <View style={s.listRow}>
-                      {item.isSystem ? (
-                        <View style={s.systemCircle}>
-                          <Img source={item.icon} style={s.iconXs} contentFit="contain" />
+                    <SpringPressable scaleTo={0.98} style={s.listRowPressable}>
+                      <View style={s.listRow}>
+                        {item.isSystem ? (
+                          <View style={s.systemCircle}>
+                            <Img source={item.icon} style={s.iconXs} contentFit="contain" />
+                          </View>
+                        ) : (
+                          <CircleAvatar source={item.avatar} size={32} />
+                        )}
+                        <View style={s.listMid}>
+                          <T style={s.listName}>{item.name}</T>
+                          <RowMeta brokerAvatars={[item.brokerAvatar]} label={item.label} />
                         </View>
-                      ) : (
-                        <CircleAvatar source={item.avatar} size={32} />
-                      )}
-                      <View style={s.listMid}>
-                        <T style={s.listName}>{item.name}</T>
-                        <RowMeta brokerAvatars={[item.brokerAvatar]} label={item.label} />
+                        <View style={s.listRight}>
+                          <T style={s.listValue}>{item.amount}</T>
+                          {!!item.type && <T style={s.activityType}>{item.type}</T>}
+                        </View>
                       </View>
-                      <View style={s.listRight}>
-                        <T style={s.listValue}>{item.amount}</T>
-                        {!!item.type && <T style={s.activityType}>{item.type}</T>}
-                      </View>
-                    </View>
+                    </SpringPressable>
                     {i < ACTIVITY.length - 1 && <Divider />}
                   </View>
                 ))}
@@ -616,14 +623,16 @@ export default function HomeScreen() {
           {/* gap-16 between news items, no dividers */}
           <View style={{ gap: 16 }}>
             {NEWS.map(item => (
-              <View key={item.id} style={s.newsRow}>
-                <View style={s.newsBody}>
-                  <T style={s.newsSource}>{item.source}</T>
-                  <T style={s.newsHeadline}>{item.headline}</T>
-                  <T style={s.newsTime}>{item.time}</T>
+              <SpringPressable key={item.id} scaleTo={0.98}>
+                <View style={s.newsRow}>
+                  <View style={s.newsBody}>
+                    <T style={s.newsSource}>{item.source}</T>
+                    <T style={s.newsHeadline}>{item.headline}</T>
+                    <T style={s.newsTime}>{item.time}</T>
+                  </View>
+                  <View style={s.newsThumb} />
                 </View>
-                <View style={s.newsThumb} />
-              </View>
+              </SpringPressable>
             ))}
           </View>
         </View>
@@ -638,7 +647,7 @@ export default function HomeScreen() {
             contentContainerStyle={{ paddingHorizontal: 16, gap: 20 }}
           >
             {/* ETF Portfolios — image at left:235 top:64 w:131 h:90 */}
-            <View style={[s.card, { backgroundColor: '#ecf3f7' }]}>
+            <SpringPressable scaleTo={0.97} style={[s.card, { backgroundColor: '#ecf3f7' }]}>
               <View style={s.cardInfo}>
                 <View style={{ gap: 2 }}>
                   <T style={s.cardTitle}>ETF Portfolios</T>
@@ -650,10 +659,10 @@ export default function HomeScreen() {
                 </View>
               </View>
               <Img source={Images.cardEtf} style={s.cardImgEtf} contentFit="contain" />
-            </View>
+            </SpringPressable>
 
             {/* Direct indexing — image at left:225 top:46 w:172 h:117 */}
-            <View style={[s.card, { backgroundColor: '#f1f4e8' }]}>
+            <SpringPressable scaleTo={0.97} style={[s.card, { backgroundColor: '#f1f4e8' }]}>
               <View style={s.cardInfo}>
                 <View style={{ gap: 2 }}>
                   <T style={s.cardTitle}>Direct indexing</T>
@@ -665,10 +674,10 @@ export default function HomeScreen() {
                 </View>
               </View>
               <Img source={Images.cardDirectIdx} style={s.cardImgDirect} contentFit="contain" />
-            </View>
+            </SpringPressable>
 
             {/* Referral — image at left:261 centered+34px offset, w:96 h:96 */}
-            <View style={[s.card, { backgroundColor: '#f4f3ee' }]}>
+            <SpringPressable scaleTo={0.97} style={[s.card, { backgroundColor: '#f4f3ee' }]}>
               <View style={[s.cardInfo, { width: 220 }]}>
                 <View style={{ gap: 2 }}>
                   <T style={s.cardTitle}>Earn up to $10,000 USD for referral</T>
@@ -676,7 +685,7 @@ export default function HomeScreen() {
                 </View>
               </View>
               <Img source={Images.cardReferral} style={s.cardImgReferral} contentFit="contain" />
-            </View>
+            </SpringPressable>
           </ScrollView>
         </View>
 
@@ -801,11 +810,16 @@ const s = StyleSheet.create({
   portfolioGain: {
     fontSize: 14, fontWeight: '500', color: '#3b7e3f', lineHeight: 20,
   },
+  portfolioGainPeriod: {
+    fontSize: 14, color: 'rgba(10,13,18,0.5)', lineHeight: 20,
+  },
 
   // ── Period bar — no container background; active item gets white pill with shadow ──
   periodBar: {
     flexDirection: 'row', alignItems: 'center', gap: 2,
-    alignSelf: 'stretch', paddingVertical: 4,
+    alignSelf: 'stretch', padding: 4,
+    backgroundColor: 'rgba(47,48,50,0.05)',
+    borderRadius: 24,
   },
   // flex:1 on wrapStyle (Animated.View); width:'100%' fills it on Pressable
   periodBtn: { width: '100%', alignItems: 'center', paddingVertical: 6, borderRadius: 12, position: 'relative' },
@@ -820,7 +834,7 @@ const s = StyleSheet.create({
     marginTop: 24,
   },
   quickCard: {
-    flex: 1, backgroundColor: '#f5f5f5', borderRadius: 10,
+    backgroundColor: '#f5f5f5', borderRadius: 10,
     borderWidth: 1, borderColor: 'rgba(0,0,0,0.06)',
     padding: 16, gap: 8, overflow: 'hidden',
   },
@@ -842,6 +856,7 @@ const s = StyleSheet.create({
   tabTxtActive: { color: '#414651' },
 
   // ── List rows ──
+  listRowPressable: { paddingVertical: 2 },
   listRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   listMid: { flex: 1, gap: 4 },
   listName: { fontSize: 14, color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
@@ -880,7 +895,7 @@ const s = StyleSheet.create({
   newsSource: { fontSize: 12, fontWeight: '500', color: 'rgba(10,13,18,0.6)', lineHeight: 18 },
   newsHeadline: { fontSize: 14, color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
   newsTime: { fontSize: 12, color: 'rgba(10,13,18,0.6)', lineHeight: 18 },
-  newsThumb: { width: 60, height: 60, borderRadius: 8, flexShrink: 0, backgroundColor: '#666' },
+  newsThumb: { width: 60, height: 60, borderRadius: 8, flexShrink: 0, backgroundColor: '#e9e9eb', borderWidth: 1, borderColor: 'rgba(0,0,0,0.06)' },
 
   // ── For you cards ──
   card: {
