@@ -576,20 +576,18 @@ export default function StrategyScreen() {
               </View>
             </SpringPressable>
           </View>
-          <View style={{ gap: 2 }}>
+          <View style={{ gap: 8 }}>
             {TRANSACTIONS.map((tx, i) => (
-              <View key={`${tx.ticker}-${i}`}>
-                <SpringPressable scaleTo={0.98}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                    <View style={[s.txCircle, { backgroundColor: tx.ticker === 'AMD' ? 'rgba(30,41,59,0.09)' : 'rgba(220,38,38,0.09)' }]}>
-                      <T style={[s.txInitial, { color: tx.ticker === 'AMD' ? '#1e293b' : '#dc2626' }]}>{tx.ticker.slice(0, 2)}</T>
-                    </View>
-                    <View style={{ flex: 1, paddingVertical: 6 }}>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                        <T style={s.txTicker}>{tx.ticker}</T>
-                        <View style={[s.txBadge, tx.positive ? s.txBadgeBuy : s.txBadgeSell]}>
-                          <T style={[s.txBadgeTxt, { color: tx.positive ? '#316434' : '#98443d' }]}>{tx.type}</T>
-                        </View>
+              <SpringPressable key={`${tx.ticker}-${i}`} scaleTo={0.98}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                  <View style={[s.txCircle, { backgroundColor: tx.ticker === 'AMD' ? '#1e293b' : '#cc0000' }]}>
+                    <T style={[s.txInitial, { color: '#ffffff' }]}>{tx.ticker[0]}</T>
+                  </View>
+                  <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 6 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                      <T style={s.txTicker}>{tx.ticker}</T>
+                      <View style={[s.txBadge, tx.positive ? s.txBadgeBuy : s.txBadgeSell]}>
+                        <T style={[s.txBadgeTxt, { color: tx.positive ? '#316434' : '#98443d' }]}>{tx.type}</T>
                       </View>
                     </View>
                     <View style={{ alignItems: 'flex-end', gap: 2 }}>
@@ -597,11 +595,8 @@ export default function StrategyScreen() {
                       <T style={s.txDate}>{tx.date}</T>
                     </View>
                   </View>
-                </SpringPressable>
-                {i < TRANSACTIONS.length - 1 && (
-                  <View style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.06)' }} />
-                )}
-              </View>
+                </View>
+              </SpringPressable>
             ))}
           </View>
         </View>
