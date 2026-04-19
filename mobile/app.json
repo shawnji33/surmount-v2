@@ -24,7 +24,8 @@
       "expo-router"
     ],
     "experiments": {
-      "typedRoutes": true
+      "typedRoutes": true,
+      "baseUrl": "/surmount-v2/mobile"
     }
   }
 }
