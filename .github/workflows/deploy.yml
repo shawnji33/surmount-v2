@@ -1,0 +1,73 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: mobile/node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('mobile/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: mobile
+
+      - name: Build Expo web
+        run: npx expo export --platform web
+        working-directory: mobile
+
+      - name: Assemble site
+        run: |
+          mkdir -p _site/mobile
+          # Static HTML prototypes (root, B2B, B2C, shared)
+          cp .nojekyll _site/
+          cp index.html _site/
+          cp -r shared _site/
+          cp -r B2B _site/
+          cp -r B2C _site/
+          # Mobile app web build → /mobile/ subfolder
+          cp -r mobile/dist/. _site/mobile/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Surmount",
+    "slug": "surmount-mobile",
+    "version": "1.0.0",
+    "scheme": "surmount",
+    "platforms": ["ios", "android", "web"],
+    "ios": {
+      "bundleIdentifier": "com.surmount.mobile",
+      "supportsTablet": false
+    },
+    "android": {
+      "package": "com.surmount.mobile",
+      "adaptiveIcon": {
+        "backgroundColor": "#406AD0"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "baseUrl": "/surmount-v2/mobile"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
