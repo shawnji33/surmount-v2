@@ -10,48 +10,54 @@ import {
 } from 'react-native';
 import { colors, spacing, radius, fontSize, fontWeight, lineHeight } from '../constants/tokens';
 
-// ─── Local assets ─────────────────────────────────────────────────────────────
+// ─── Assets via public/ static directory ──────────────────────────────────────
+// Served at /surmount-v2/mobile/assets/ on GitHub Pages.
+// Metro static export doesn't reliably bundle require() assets,
+// so we serve them as static files from the public/ directory instead.
+
+const BASE = '/surmount-v2/mobile/assets';
+const u = (path: string) => ({ uri: `${BASE}/${path}` });
 
 const Icons = {
-  plus:         require('../assets/icons/icon-plus.svg'),
-  building:     require('../assets/icons/icon-building.svg'),
-  arrowNarrow:  require('../assets/icons/icon-arrow-narrow.svg'),
-  refresh:      require('../assets/icons/icon-refresh.svg'),
-  moneyIn:      require('../assets/icons/icon-money-in.svg'),
-  moneyOut:     require('../assets/icons/icon-money-out.svg'),
-  dollarCircle: require('../assets/icons/icon-dollar-circle.svg'),
-  chevronDown:  require('../assets/icons/icon-chevron-down.svg'),
-  gift:         require('../assets/icons/icon-gift.svg'),
-  bell:         require('../assets/icons/icon-bell.svg'),
-  settings:     require('../assets/icons/icon-settings.svg'),
-  dot:          require('../assets/icons/icon-dot.svg'),
+  plus:         u('icons/icon-plus.svg'),
+  building:     u('icons/icon-building.svg'),
+  arrowNarrow:  u('icons/icon-arrow-narrow.svg'),
+  refresh:      u('icons/icon-refresh.svg'),
+  moneyIn:      u('icons/icon-money-in.svg'),
+  moneyOut:     u('icons/icon-money-out.svg'),
+  dollarCircle: u('icons/icon-dollar-circle.svg'),
+  chevronDown:  u('icons/icon-chevron-down.svg'),
+  gift:         u('icons/icon-gift.svg'),
+  bell:         u('icons/icon-bell.svg'),
+  settings:     u('icons/icon-settings.svg'),
+  dot:          u('icons/icon-dot.svg'),
 };
 
 const Images = {
-  proBadgeBg:       require('../assets/images/pro-badge-bg.png'),
-  proBadgeGear:     require('../assets/images/pro-badge-gear.svg'),
-  portfolioValueBg: require('../assets/images/portfolio-value-bg.png'),
-  chartFill:        require('../assets/images/chart-fill.svg'),
-  chartLine:        require('../assets/images/chart-line.svg'),
-  cardEtf:          require('../assets/images/card-etf.png'),
-  cardDirectIdx:    require('../assets/images/card-direct-indexing.png'),
-  cardReferral:     require('../assets/images/card-referral.png'),
+  proBadgeBg:       u('images/pro-badge-bg.png'),
+  proBadgeGear:     u('images/pro-badge-gear.svg'),
+  portfolioValueBg: u('images/portfolio-value-bg.png'),
+  chartFill:        u('images/chart-fill.svg'),
+  chartLine:        u('images/chart-line.svg'),
+  cardEtf:          u('images/card-etf.png'),
+  cardDirectIdx:    u('images/card-direct-indexing.png'),
+  cardReferral:     u('images/card-referral.png'),
 };
 
 const Avatars = {
-  user:              require('../assets/avatars/user-avatar.png'),
-  holdingArgentina:  require('../assets/avatars/holding-investing-argentina.png'),
-  holdingAaplGoog:   require('../assets/avatars/holding-aapl-goog.png'),
-  holdingConsumer:   require('../assets/avatars/holding-consumer-tech.png'),
-  brokerRobinhood:   require('../assets/avatars/broker-robinhood.png'),
-  brokerIBKR:        require('../assets/avatars/broker-ibkr.png'),
-  brokerSchwab:      require('../assets/avatars/broker-schwab.png'),
-  brokerSchwab2:     require('../assets/avatars/broker-schwab-2.png'),
-  brokerWebull:      require('../assets/avatars/broker-webull.png'),
-  brokerKraken:      require('../assets/avatars/broker-kraken.png'),
-  brokerSurmount:    require('../assets/avatars/broker-surmount.png'),
-  activityVisa:      require('../assets/avatars/activity-visa.png'),
-  activityGoogl:     require('../assets/avatars/activity-googl.png'),
+  user:              u('avatars/user-avatar.png'),
+  holdingArgentina:  u('avatars/holding-investing-argentina.png'),
+  holdingAaplGoog:   u('avatars/holding-aapl-goog.png'),
+  holdingConsumer:   u('avatars/holding-consumer-tech.png'),
+  brokerRobinhood:   u('avatars/broker-robinhood.png'),
+  brokerIBKR:        u('avatars/broker-ibkr.png'),
+  brokerSchwab:      u('avatars/broker-schwab.png'),
+  brokerSchwab2:     u('avatars/broker-schwab-2.png'),
+  brokerWebull:      u('avatars/broker-webull.png'),
+  brokerKraken:      u('avatars/broker-kraken.png'),
+  brokerSurmount:    u('avatars/broker-surmount.png'),
+  activityVisa:      u('avatars/activity-visa.png'),
+  activityGoogl:     u('avatars/activity-googl.png'),
 };
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
