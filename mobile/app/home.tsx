@@ -10,6 +10,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { motion } from 'motion/react';
+import { useRouter } from 'expo-router';
 import { colors, spacing, radius, fontSize, fontWeight, lineHeight } from '../constants/tokens';
 
 // ─── Assets via public/ static directory ──────────────────────────────────────
@@ -448,6 +449,7 @@ const GL2: any = { ...StyleSheet.absoluteFillObject, borderRadius: 100, backgrou
 const GL3: any = { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(200,200,212,0.08)', mixBlendMode: 'color-burn', borderRadius: 100 };
 
 export default function HomeScreen() {
+  const router = useRouter();
   const [period, setPeriod] = useState('1D');
   const [tab, setTab] = useState('All');
 
@@ -555,7 +557,7 @@ export default function HomeScreen() {
           <View>
             {HOLDINGS.map((item, i) => (
               <View key={item.id}>
-                <SpringPressable scaleTo={0.98} style={s.listRowPressable}>
+                <SpringPressable scaleTo={0.98} style={s.listRowPressable} onPress={() => router.push('/strategy')}>
                   <View style={s.listRow}>
                     <CircleAvatar source={item.avatar} size={32} />
                     <View style={s.listMid}>
@@ -590,7 +592,7 @@ export default function HomeScreen() {
                       <View style={s.listRow}>
                         {item.isSystem ? (
                           <View style={s.systemCircle}>
-                            <Img source={item.icon} style={s.iconXs} contentFit="contain" />
+                            <Img source={item.icon!} style={s.iconXs} contentFit="contain" />
                           </View>
                         ) : (
                           <CircleAvatar source={item.avatar} size={32} />
