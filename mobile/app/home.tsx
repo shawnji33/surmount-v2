@@ -196,11 +196,13 @@ function getMockData(period: string) {
 
 // progress 0→1: clip-rect reveals chart left-to-right (ease-out cubic)
 function drawPortfolioChart(canvas: any, period: string, progress = 1) {
-  const W = 390, H = 237;
+  // Use actual rendered width so the line fills the full bleed container
+  const W = canvas.offsetWidth || 390;
+  const H = 237;
   const dpr = window.devicePixelRatio || 1;
   canvas.width = W * dpr;
   canvas.height = H * dpr;
-  canvas.style.width = W + 'px';
+  // CSS width/height stay 100%/237px (set on the element); only update height explicitly
   canvas.style.height = H + 'px';
 
   const ctx = canvas.getContext('2d');
@@ -320,8 +322,8 @@ function PortfolioChart({ period }: { period: string }) {
 
   return (
     <Animated.View style={{ alignSelf: 'stretch', marginHorizontal: -16, opacity: fadeAnim }}>
-      {/* @ts-ignore */}
-      <canvas ref={canvasRef} width={390} height={237} style={{ display: 'block' }} />
+      {/* @ts-ignore — width:100% fills the full-bleed Animated.View; offsetWidth read in drawPortfolioChart */}
+      <canvas ref={canvasRef} height={237} style={{ display: 'block', width: '100%' }} />
       <View style={[
         { height: 1, alignSelf: 'stretch' },
         { backgroundImage: 'repeating-linear-gradient(to right, rgba(0,0,0,0.12) 0, rgba(0,0,0,0.12) 4px, transparent 4px, transparent 8px)' } as any,
