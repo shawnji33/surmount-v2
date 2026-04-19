@@ -8,20 +8,27 @@ import {
   Platform,
   type ViewStyle,
 } from 'react-native';
-import {
-  Plus,
-  Buildings,
-  ArrowRight,
-  ArrowCounterClockwise,
-  ArrowCircleDown,
-  ArrowCircleUp,
-  CurrencyDollar,
-  CaretDown,
-  Gift,
-  Bell,
-  Gear,
-} from '@phosphor-icons/react';
 import { colors, spacing, radius, fontSize, fontWeight, lineHeight } from '../constants/tokens';
+
+// ─── Assets via public/ static directory ──────────────────────────────────────
+const BASE = '/surmount-v2/mobile/assets';
+const u = (path: string) => ({ uri: `${BASE}/${path}` });
+
+// Phosphor icons — generated from @phosphor-icons/react (duotone, #414651)
+// Saved as static SVG files to avoid React Native Web's SVG rendering issues
+const Icons = {
+  plus:         u('icons/phosphor/plus.svg'),
+  buildings:    u('icons/phosphor/buildings.svg'),
+  arrowRight:   u('icons/phosphor/arrow-right.svg'),
+  refresh:      u('icons/phosphor/arrow-counter-clockwise.svg'),
+  moneyIn:      u('icons/phosphor/arrow-circle-down.svg'),
+  moneyOut:     u('icons/phosphor/arrow-circle-up.svg'),
+  dollarCircle: u('icons/phosphor/currency-dollar.svg'),
+  caretDown:    u('icons/phosphor/caret-down.svg'),
+  gift:         u('icons/phosphor/gift.svg'),
+  bell:         u('icons/phosphor/bell.svg'),
+  gear:         u('icons/phosphor/gear.svg'),
+};
 
 const Images = {
   proBadgeBg:       u('images/pro-badge-bg.png'),
@@ -79,25 +86,6 @@ function Img({ source, style, contentFit = 'cover' }: ImgProps) {
   );
 }
 
-// ─── Phosphor icon wrapper ────────────────────────────────────────────────────
-// Wraps a Phosphor SVG icon in a View for React Native layout compatibility.
-type PHIconProps = {
-  as: React.ElementType;
-  size?: number;
-  color?: string;
-  weight?: 'thin' | 'light' | 'regular' | 'bold' | 'fill' | 'duotone';
-  style?: ViewStyle | any;
-};
-
-function PHIcon({ as: Icon, size = 20, color = '#414651', weight = 'duotone', style }: PHIconProps) {
-  return (
-    <View style={[{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }, style]}>
-      {/* @ts-ignore — SVG renders correctly in Expo web export (React DOM context) */}
-      <Icon size={size} weight={weight} color={color} />
-    </View>
-  );
-}
-
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 const TIME_PERIODS = ['1D', '1W', '1M', '3M', '6M', 'YTD', '1Y', 'All'];
@@ -135,9 +123,9 @@ const HOLDINGS = [
 const ACTIVITY = [
   { id: '1', name: 'V',                    label: 'Robinhood', brokerAvatar: Avatars.brokerRobinhood, avatar: Avatars.activityVisa,  isSystem: false, amount: '-$130.60',   type: 'Sell' },
   { id: '2', name: 'GOOGL',                label: 'IBKR',      brokerAvatar: Avatars.brokerIBKR,      avatar: Avatars.activityGoogl, isSystem: false, amount: '+$124.52',   type: 'Buy' },
-  { id: '3', name: 'Portfolio rebalanced', label: 'Kraken',    brokerAvatar: Avatars.brokerKraken,    SystemIcon: ArrowCounterClockwise, isSystem: true,  amount: '$2,000.00',  type: 'Tax loss harvesting' },
-  { id: '4', name: 'Deposit',              label: 'Surmount',  brokerAvatar: Avatars.brokerSurmount,  SystemIcon: ArrowCircleDown,       isSystem: true,  amount: '+$2,000.00', type: '' },
-  { id: '5', name: 'Withdrawal',           label: 'Surmount',  brokerAvatar: Avatars.brokerSurmount,  SystemIcon: ArrowCircleUp,         isSystem: true,  amount: '-$2,000.00', type: '' },
+  { id: '3', name: 'Portfolio rebalanced', label: 'Kraken',    brokerAvatar: Avatars.brokerKraken,    icon: Icons.refresh,           isSystem: true,  amount: '$2,000.00',  type: 'Tax loss harvesting' },
+  { id: '4', name: 'Deposit',              label: 'Surmount',  brokerAvatar: Avatars.brokerSurmount,  icon: Icons.moneyIn,           isSystem: true,  amount: '+$2,000.00', type: '' },
+  { id: '5', name: 'Withdrawal',           label: 'Surmount',  brokerAvatar: Avatars.brokerSurmount,  icon: Icons.moneyOut,          isSystem: true,  amount: '-$2,000.00', type: '' },
 ];
 
 const NEWS = [
@@ -181,10 +169,10 @@ function AvatarStack({ sources }: { sources: any[] }) {
   );
 }
 
-function BadgePill({ icon, label }: { icon?: React.ElementType; label: string }) {
+function BadgePill({ icon, label }: { icon?: { uri: string }; label: string }) {
   return (
     <View style={s.badge}>
-      {icon && <PHIcon as={icon} size={12} />}
+      {icon && <Img source={icon} style={{ width: 12, height: 12 }} contentFit="contain" />}
       <T style={s.badgeTxt}>{label}</T>
     </View>
   );
@@ -264,11 +252,11 @@ export default function HomeScreen() {
         {/* ── Quick actions (24px gap from hero via scroll container gap) ── */}
         <View style={s.quickRow}>
           <Pressable style={s.quickCard}>
-            <PHIcon as={Plus} size={20} />
+            <Img source={Icons.plus} style={s.iconSm} contentFit="contain" />
             <T style={s.quickLabel}>Connect accounts</T>
           </Pressable>
           <Pressable style={s.quickCard}>
-            <PHIcon as={Buildings} size={20} />
+            <Img source={Icons.buildings} style={s.iconSm} contentFit="contain" />
             <T style={s.quickLabel}>Invest in strategies</T>
           </Pressable>
         </View>
@@ -277,7 +265,7 @@ export default function HomeScreen() {
         <View style={[s.section, { marginTop: 24 }]}>
           <View style={s.sectionHead}>
             <T style={s.sectionTitle}>Holdings</T>
-            <PHIcon as={ArrowRight} size={20} />
+            <Img source={Icons.arrowRight} style={s.iconSm} contentFit="contain" />
           </View>
 
           <View style={s.tabRow}>
@@ -324,7 +312,7 @@ export default function HomeScreen() {
                     <View style={s.listRow}>
                       {item.isSystem ? (
                         <View style={s.systemCircle}>
-                          <PHIcon as={item.SystemIcon!} size={16} />
+                          <Img source={item.icon} style={s.iconXs} contentFit="contain" />
                         </View>
                       ) : (
                         <CircleAvatar source={item.avatar} size={32} />
@@ -385,7 +373,7 @@ export default function HomeScreen() {
                   <T style={s.cardDesc}>Classic portfolios made up of ETFs.</T>
                 </View>
                 <View style={s.cardBadges}>
-                  <BadgePill icon={CurrencyDollar} label="Up to 9%" />
+                  <BadgePill icon={Icons.dollarCircle} label="Up to 9%" />
                   <BadgePill label="Risk level: 2/5" />
                 </View>
               </View>
@@ -400,7 +388,7 @@ export default function HomeScreen() {
                   <T style={s.cardDesc}>Own the market, minimize your taxes.</T>
                 </View>
                 <View style={s.cardBadges}>
-                  <BadgePill icon={CurrencyDollar} label="Up to 14%" />
+                  <BadgePill icon={Icons.dollarCircle} label="Up to 14%" />
                   <BadgePill label="Risk level: 4/5" />
                 </View>
               </View>
@@ -432,20 +420,20 @@ export default function HomeScreen() {
             <View style={s.pillGradient} />
             <CircleAvatar source={Avatars.user} size={20} />
             <T style={s.pillTxt}>All Portfolios</T>
-            <PHIcon as={CaretDown} size={16} color="rgba(65,70,81,0.6)" />
+            <Img source={Icons.caretDown} style={[s.iconSm, { opacity: 0.6 }]} contentFit="contain" />
           </Pressable>
 
           {/* Action icons */}
           <View style={s.navIcons}>
             <Pressable style={s.iconBtn}>
-              <PHIcon as={Gift} size={20} />
+              <Img source={Icons.gift} style={s.iconSm} contentFit="contain" />
             </Pressable>
             <Pressable style={s.iconBtn}>
-              <PHIcon as={Bell} size={20} />
+              <Img source={Icons.bell} style={s.iconSm} contentFit="contain" />
               <View style={s.notifDot} />
             </Pressable>
             <Pressable style={s.iconBtn}>
-              <PHIcon as={Gear} size={20} />
+              <Img source={Icons.gear} style={s.iconSm} contentFit="contain" />
             </Pressable>
           </View>
         </View>
@@ -491,6 +479,8 @@ const s = StyleSheet.create({
     width: 32, height: 32, alignItems: 'center', justifyContent: 'center',
     borderRadius: 6, position: 'relative',
   },
+  iconSm: { width: 20, height: 20 },
+  iconXs: { width: 16, height: 16 },
   notifDot: {
     position: 'absolute', top: 4, right: 3,
     width: 7, height: 7, borderRadius: 4,
