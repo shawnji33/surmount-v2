@@ -1,0 +1,27 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 127.081 124.35" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="Repeat group 1" style="mix-blend-mode:luminosity" filter="url(#filter0_d_0_370)">
+<g id="Repeat group 1_inner" data-figma-trr="r6u3.3-0f">
+<path id="Vector" d="M66.4269 60.6373C65.6419 59.8705 64.4127 59.7962 63.5407 60.4125C62.6669 59.7962 61.4395 59.8705 60.6545 60.6355C60.2321 61.047 60.0018 61.5926 60 62.1727V62.1745C60.0018 62.4646 60.0598 62.7456 60.1686 63.0066C60.281 63.2658 60.4442 63.5051 60.6545 63.7118C61.0896 64.1359 61.6607 64.348 62.2318 64.348C62.6922 64.348 63.1527 64.2103 63.5407 63.9365H63.5425C63.9305 64.2121 64.391 64.3499 64.8515 64.3499C65.4226 64.3499 65.9936 64.1359 66.4288 63.7136C66.8494 63.3021 67.0814 62.7564 67.0814 62.1745C67.0814 61.5926 66.8494 61.0488 66.4269 60.6373ZM65.7779 63.0791C65.5223 63.3275 65.1869 63.4525 64.8515 63.4525C64.6375 63.4525 64.4254 63.4036 64.2333 63.3021L65.0872 62.4682V62.4664C65.2685 62.2924 65.2685 62.0078 65.0872 61.8319C64.9095 61.6579 64.6176 61.6579 64.4381 61.8337H64.4363L63.6223 62.6259L63.16 63.0773C63.0857 63.1498 63.0041 63.2114 62.917 63.264C62.4112 63.5649 61.7423 63.5033 61.3053 63.0773C61.057 62.8362 60.921 62.5153 60.921 62.1745C60.921 61.8337 61.057 61.5129 61.3053 61.27C61.561 61.0216 61.8964 60.8965 62.2318 60.8965C62.4439 60.8965 62.6578 60.9455 62.85 61.047L61.9943 61.8809C61.8148 62.0567 61.8148 62.3413 61.9943 62.5153C62.0849 62.6042 62.2027 62.6477 62.3206 62.6477C62.4384 62.6477 62.5563 62.6042 62.6451 62.5153L63.4591 61.7231L63.9232 61.27C63.9976 61.1974 64.0792 61.1358 64.1644 61.0851C64.3747 60.9582 64.6122 60.8965 64.8515 60.8965C65.1869 60.8965 65.5223 61.0216 65.7779 61.27C66.0263 61.5129 66.1622 61.8319 66.1622 62.1745C66.1622 62.5171 66.0263 62.8362 65.7779 63.0791Z" fill="url(#paint0_linear_0_370)"/>
+</g>
+<use xlink:href="#Repeat%20group%201_inner" transform="translate(91.8311 -20.3518) rotate(60)"/>
+<use xlink:href="#Repeat%20group%201_inner" transform="translate(155.372 49.0004) rotate(120)"/>
+<use xlink:href="#Repeat%20group%201_inner" transform="translate(127.081 138.704) rotate(-180)"/>
+<use xlink:href="#Repeat%20group%201_inner" transform="translate(35.2503 159.056) rotate(-120)"/>
+<use xlink:href="#Repeat%20group%201_inner" transform="translate(-28.2904 89.704) rotate(-60)"/>
+</g>
+<defs>
+<filter id="filter0_d_0_370" x="-46.4593" y="-40.6478" width="220" height="220" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset/>
+<feGaussianBlur stdDeviation="30"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.701961 0 0 0 0 0.678431 0 0 0 0 0.65098 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_0_370"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_0_370" result="shape"/>
+</filter>
+<linearGradient id="paint0_linear_0_370" x1="60" y1="60" x2="63.8799" y2="66.3164" gradientUnits="userSpaceOnUse">
+<stop stop-color="#C1DAFF"/>
+<stop offset="1" stop-color="#789AD1"/>
+</linearGradient>
+</defs>
+</svg>

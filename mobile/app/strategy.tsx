@@ -137,16 +137,16 @@ function getMockData(period: string) {
   const now = Math.floor(Date.now() / 1000);
   type Cfg = { n: number; step: number; vol: number; startMult: number; peak?: number; peakAt?: number };
   const cfg: Record<string, Cfg> = {
-    '1D':  { n: 48,  step: 1800,  vol: 0.0018, startMult: 0.975, peak: 1.022, peakAt: 0.60 },
+    '24H': { n: 48,  step: 1800,  vol: 0.0018, startMult: 0.975, peak: 1.022, peakAt: 0.60 },
     '1W':  { n: 84,  step: 7200,  vol: 0.004,  startMult: 0.978 },
     '1M':  { n: 30,  step: 86400, vol: 0.008,  startMult: 0.952 },
     '3M':  { n: 90,  step: 86400, vol: 0.010,  startMult: 0.920 },
     '6M':  { n: 180, step: 86400, vol: 0.012,  startMult: 0.885 },
     'YTD': { n: 108, step: 86400, vol: 0.012,  startMult: 0.902 },
     '1Y':  { n: 252, step: 86400, vol: 0.015,  startMult: 0.845 },
-    'All': { n: 365, step: 86400, vol: 0.018,  startMult: 0.635 },
+    'ALL': { n: 365, step: 86400, vol: 0.018,  startMult: 0.635 },
   };
-  const { n, step, vol, startMult, peak, peakAt } = cfg[period] ?? cfg['1D'];
+  const { n, step, vol, startMult, peak, peakAt } = cfg[period] ?? cfg['24H'];
   const end = STRATEGY_END;
   const start = end * startMult;
   const raw: { time: number; value: number }[] = [];
@@ -300,20 +300,21 @@ const TOP_HOLDINGS = [
   { ticker: 'TSLA', name: 'Tesla Inc.',            pct:  5, color: '#dc2626' },
 ];
 
+// Exact Figma colors: #c8dbf5 #8eb8eb #75a5e5 #5585dc #7a5af8 (light→dark blue/purple)
 const INDUSTRIES = [
-  { name: 'Semiconductors',    pct: 35, color: '#7c3aed' },
-  { name: 'Cloud Computing',   pct: 28, color: '#4f46e5' },
-  { name: 'Software',          pct: 20, color: '#3b82f6' },
-  { name: 'Computer Hardware', pct: 12, color: '#0ea5e9' },
-  { name: 'Other',             pct:  5, color: '#94a3b8' },
+  { name: 'Information Technology', pct: 15, color: '#c8dbf5' },
+  { name: 'Real Estate',            pct: 15, color: '#8eb8eb' },
+  { name: 'Energy',                 pct: 15, color: '#75a5e5' },
+  { name: 'Telecom',                pct: 15, color: '#5585dc' },
+  { name: 'Healthcare',             pct: 15, color: '#7a5af8' },
 ];
 
 const TRANSACTIONS = [
-  { ticker: 'TSLA', type: 'Sell', pct: '-2.35%', date: 'Jan 20', color: '#dc2626', positive: false },
-  { ticker: 'AMD',  type: 'Buy',  pct: '+1.25%', date: 'Jan 19', color: '#1e293b', positive: true  },
-  { ticker: 'GOOG', type: 'Buy',  pct: '+0.82%', date: 'Jan 18', color: '#d97706', positive: true  },
-  { ticker: 'COIN', type: 'Sell', pct: '-0.45%', date: 'Jan 17', color: '#1652f0', positive: false },
-  { ticker: 'HOOD', type: 'Buy',  pct: '+2.10%', date: 'Jan 15', color: '#16a34a', positive: true  },
+  { ticker: 'TSLA', type: 'Buy',  pct: '+2.56%', date: 'Aug 20, 2025', positive: true  },
+  { ticker: 'TSLA', type: 'Buy',  pct: '+2.56%', date: 'Aug 19, 2025', positive: true  },
+  { ticker: 'TSLA', type: 'Buy',  pct: '+5.42%', date: 'Aug 17, 2025', positive: true  },
+  { ticker: 'AMD',  type: 'Sell', pct: '-2.12%', date: 'Aug 9, 2025',  positive: false },
+  { ticker: 'TSLA', type: 'Sell', pct: '-1.24%', date: 'Aug 2, 2025',  positive: false },
 ];
 
 const SIMILAR_STRATEGIES = [
@@ -341,7 +342,6 @@ export default function StrategyScreen() {
           <SpringPressable style={s.navBtn} scaleTo={0.82} onPress={() => router.back()}>
             <BackChevron />
           </SpringPressable>
-          <T style={s.navTitle}>Strategy</T>
           <SpringPressable style={s.navBtn} scaleTo={0.82}>
             <ShareIcon />
           </SpringPressable>
@@ -362,12 +362,10 @@ export default function StrategyScreen() {
 
         {/* ── Hero card ── */}
         <View style={s.heroCard}>
-          {/* Dark tech gradient */}
-          <View style={[StyleSheet.absoluteFillObject, { backgroundImage: 'linear-gradient(135deg, #0a1628 0%, #1a1040 50%, #0d2340 100%)' } as any]} />
-          {/* Subtle grid overlay */}
-          <View style={[StyleSheet.absoluteFillObject, { opacity: 0.07, backgroundImage: 'linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)', backgroundSize: '20px 20px' } as any]} />
-          {/* Bottom fade for text legibility */}
-          <View style={[StyleSheet.absoluteFillObject, { backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0) 20%, rgba(0,0,0,0.65) 100%)' } as any]} />
+          {/* Base color layer */}
+          <View style={[StyleSheet.absoluteFillObject, { backgroundColor: '#2f1b00' } as any]} />
+          {/* Warm brown gradient overlay — matches Figma from-[rgba(47,27,0,0)] to-[rgba(47,27,0,0.95)] */}
+          <View style={[StyleSheet.absoluteFillObject, { backgroundImage: 'linear-gradient(to bottom, rgba(47,27,0,0) 6%, rgba(47,27,0,0.95) 100%)' } as any]} />
           {/* Share button */}
           <View style={s.heroShareWrap}>
             <SpringPressable style={s.heroShareBtn} scaleTo={0.88}>
@@ -471,31 +469,27 @@ export default function StrategyScreen() {
         <View style={s.section}>
           <T style={s.sectionTitle}>Your position</T>
           <View style={s.whiteCard}>
+            {/* Shares + market value row */}
             <View style={s.posRow}>
-              <View style={{ gap: 3 }}>
-                <T style={s.posLabel}>Shares owned</T>
-                <T style={s.posValue}>142.48 shares</T>
-              </View>
-              <View style={{ gap: 3, alignItems: 'flex-end' }}>
-                <T style={s.posLabel}>Market value</T>
-                <T style={s.posValue}>$96,622.77</T>
-              </View>
+              <T style={s.posSharesValue}>1,324.24 shares</T>
+              <T style={s.posSharesValue}>$2,859.31</T>
             </View>
             <View style={s.rowDiv} />
-            <View style={s.posRow}>
-              <View style={{ gap: 3 }}>
+            {/* Returns */}
+            <View style={{ gap: 10, paddingHorizontal: 0 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <T style={s.posLabel}>Today's return</T>
-                <T style={[s.posValue, { color: '#3b7e3f' }]}>+$2.25 (+0.56%)</T>
+                <T style={[s.posLabel, { color: '#3b7e3f' }]}>$122.48 (+1.24%)</T>
               </View>
-              <View style={{ gap: 3, alignItems: 'flex-end' }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <T style={s.posLabel}>Total return</T>
-                <T style={[s.posValue, { color: '#3b7e3f' }]}>+$12,622.77 (+15.06%)</T>
+                <T style={[s.posLabel, { color: '#3b7e3f' }]}>$567.23 (+21.56%)</T>
               </View>
             </View>
             <View style={s.rowDiv} />
             <SpringPressable style={s.breakdownRow} scaleTo={0.97}>
               <T style={s.breakdownTxt}>Breakdown by accounts</T>
-              <Img source={Icons.arrowRight} style={{ width: 16, height: 16, opacity: 0.45 }} contentFit="contain" />
+              <Img source={Icons.arrowRight} style={{ width: 14, height: 14, opacity: 0.45 }} contentFit="contain" />
             </SpringPressable>
           </View>
         </View>
@@ -532,50 +526,66 @@ export default function StrategyScreen() {
         {/* ── Industries ── */}
         <View style={s.section}>
           <T style={s.sectionTitle}>Industries</T>
-          <View style={[s.whiteCard, { padding: 16 }]}>
-            {/* Segmented color bar */}
+          <View style={[s.whiteCard, { padding: 16, gap: 20 }]}>
+            {/* Segmented color bar — 16px tall, #e0e6ed bg, 8px radius */}
             <View style={s.colorBar}>
               {INDUSTRIES.map((ind) => (
-                <View key={ind.name} style={[s.colorBarSeg, { flex: ind.pct, backgroundColor: ind.color }]} />
+                <View key={ind.name} style={[s.colorBarSeg, { flex: 1, backgroundColor: ind.color }]} />
               ))}
             </View>
-            {/* Legend */}
-            {INDUSTRIES.map((ind, i) => (
-              <View key={ind.name}>
-                <View style={s.legendRow}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                    <View style={[s.legendDot, { backgroundColor: ind.color }]} />
-                    <T style={s.legendName}>{ind.name}</T>
+            {/* Legend — 14px Medium, tall 8×16px swatch */}
+            <View style={{ gap: 0 }}>
+              {INDUSTRIES.map((ind, i) => (
+                <View key={ind.name}>
+                  <View style={s.legendRow}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                      <View style={[s.legendSwatch, { backgroundColor: ind.color }]} />
+                      <T style={s.legendName}>{ind.name}</T>
+                    </View>
+                    <T style={s.legendPct}>{ind.pct}%</T>
                   </View>
-                  <T style={s.legendPct}>{ind.pct}%</T>
+                  {i < INDUSTRIES.length - 1 && <View style={[s.rowDiv, { marginHorizontal: 0 }]} />}
                 </View>
-                {i < INDUSTRIES.length - 1 && <View style={[s.rowDiv, { marginHorizontal: 0 }]} />}
-              </View>
-            ))}
+              ))}
+            </View>
           </View>
         </View>
 
         {/* ── Recent transactions ── */}
         <View style={s.section}>
-          <T style={s.sectionTitle}>Recent transactions</T>
+          {/* Header: title + "Show more >" */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <T style={s.sectionTitle}>Recent transactions</T>
+            <SpringPressable style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }} scaleTo={0.90}>
+              <T style={s.showMoreTxt}>Show more</T>
+              {/* @ts-ignore */}
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ display: 'block' }}>
+                {/* @ts-ignore */}
+                <path d="M6 12L10 8L6 4" stroke="rgba(10,13,18,0.6)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </SpringPressable>
+          </View>
           <View style={s.whiteCard}>
             {TRANSACTIONS.map((tx, i) => (
               <View key={`${tx.ticker}-${i}`}>
-                <SpringPressable scaleTo={0.98} style={{ paddingHorizontal: 16, paddingVertical: 12 }}>
+                <SpringPressable scaleTo={0.98} style={{ paddingHorizontal: 16, paddingVertical: 6 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                    <View style={[s.txCircle, { backgroundColor: tx.color + '18' }]}>
-                      <T style={[s.txInitial, { color: tx.color }]}>{tx.ticker.slice(0, 2)}</T>
+                    {/* 24px circle avatar */}
+                    <View style={[s.txCircle, { backgroundColor: tx.ticker === 'AMD' ? '#1e293b18' : '#dc262618' }]}>
+                      <T style={[s.txInitial, { color: tx.ticker === 'AMD' ? '#1e293b' : '#dc2626' }]}>{tx.ticker.slice(0, 2)}</T>
                     </View>
                     <View style={{ flex: 1 }}>
-                      <T style={s.txTicker}>{tx.ticker}</T>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                        <T style={s.txTicker}>{tx.ticker}</T>
+                        {/* Badge: pill, Buy green / Sell red */}
+                        <View style={[s.txBadge, tx.positive ? s.txBadgeBuy : s.txBadgeSell]}>
+                          <T style={[s.txBadgeTxt, { color: tx.positive ? '#316434' : '#98443d' }]}>{tx.type}</T>
+                        </View>
+                      </View>
                       <T style={s.txDate}>{tx.date}</T>
                     </View>
-                    <View style={{ alignItems: 'flex-end', gap: 4 }}>
-                      <View style={[s.txBadge, tx.positive ? s.txBadgeBuy : s.txBadgeSell]}>
-                        <T style={[s.txBadgeTxt, { color: tx.positive ? '#166534' : '#9f1239' }]}>{tx.type}</T>
-                      </View>
-                      <T style={[s.txPct, { color: tx.positive ? '#3b7e3f' : '#e02d3c' }]}>{tx.pct}</T>
-                    </View>
+                    {/* Pct: dark color (not green/red per Figma) */}
+                    <T style={s.txPct}>{tx.pct}</T>
                   </View>
                 </SpringPressable>
                 {i < TRANSACTIONS.length - 1 && <View style={s.rowDiv} />}
@@ -659,7 +669,7 @@ const s = StyleSheet.create({
 
   // ── Hero card ──
   heroCard: {
-    height: 180, borderRadius: 16, overflow: 'hidden', position: 'relative',
+    height: 180, borderRadius: 8, overflow: 'hidden', position: 'relative',
     borderWidth: 1, borderColor: 'rgba(0,0,0,0.08)',
   },
   heroShareWrap: { position: 'absolute', top: 12, right: 12, zIndex: 2 },
@@ -737,13 +747,14 @@ const s = StyleSheet.create({
     flexDirection: 'row', justifyContent: 'space-between',
     paddingHorizontal: 16, paddingVertical: 14,
   },
-  posLabel: { fontSize: 12, color: '#717680', lineHeight: 18 },
+  posSharesValue: { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
+  posLabel: { fontSize: 12, color: 'rgba(10,13,18,0.7)', lineHeight: 18 },
   posValue: { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
   breakdownRow: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingHorizontal: 16, paddingVertical: 14,
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    paddingHorizontal: 16, paddingVertical: 14, gap: 6,
   },
-  breakdownTxt: { fontSize: 14, fontWeight: '500', color: '#414651', lineHeight: 20 },
+  breakdownTxt: { fontSize: 12, fontWeight: '500', color: 'rgba(10,13,18,0.6)', lineHeight: 18 },
 
   // ── Top holdings ──
   tickerCircle:  { width: 36, height: 36, borderRadius: 10, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
@@ -755,23 +766,24 @@ const s = StyleSheet.create({
   progressFill:  { height: 4, borderRadius: 2 },
 
   // ── Industries ──
-  colorBar:    { flexDirection: 'row', height: 8, borderRadius: 4, overflow: 'hidden', marginBottom: 12 },
-  colorBarSeg: { height: 8 },
+  colorBar:    { flexDirection: 'row', height: 16, borderRadius: 8, overflow: 'hidden', backgroundColor: '#e0e6ed' },
+  colorBarSeg: { height: 16 },
   legendRow:   { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 10 },
-  legendDot:   { width: 8, height: 8, borderRadius: 4 },
-  legendName:  { fontSize: 14, color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
-  legendPct:   { fontSize: 14, color: 'rgba(10,13,18,0.6)', lineHeight: 20 },
+  legendSwatch:{ width: 8, height: 16, borderRadius: 6 },
+  legendName:  { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.7)', lineHeight: 20 },
+  legendPct:   { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.7)', lineHeight: 20 },
 
   // ── Recent transactions ──
-  txCircle:   { width: 36, height: 36, borderRadius: 10, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  txInitial:  { fontSize: 11, fontWeight: '700' },
+  txCircle:   { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  txInitial:  { fontSize: 9, fontWeight: '700' },
   txTicker:   { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
   txDate:     { fontSize: 12, color: '#717680', lineHeight: 16 },
-  txBadge:    { paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6 },
-  txBadgeBuy: { backgroundColor: '#dcfce7' },
-  txBadgeSell:{ backgroundColor: '#fef2f2' },
+  txBadge:    { paddingHorizontal: 8, paddingVertical: 2, borderRadius: 9999, borderWidth: 1 },
+  txBadgeBuy: { backgroundColor: '#eef7ee', borderColor: '#cbe7cc' },
+  txBadgeSell:{ backgroundColor: '#fbf5f5', borderColor: '#f3d7d5' },
   txBadgeTxt: { fontSize: 11, fontWeight: '600' },
-  txPct:      { fontSize: 12, lineHeight: 18 },
+  txPct:      { fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.9)', lineHeight: 20 },
+  showMoreTxt:{ fontSize: 14, fontWeight: '500', color: 'rgba(10,13,18,0.6)', lineHeight: 20 },
 
   // ── Similar strategies ──
   similarCard: {
