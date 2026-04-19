@@ -173,17 +173,14 @@ function TiltCardWeb({
     <View
       ref={cardRef}
       style={[
-        style,
         {
           willChange: 'transform',
           backfaceVisibility: 'hidden',
           // perspective() baked in — initial value set here, overwritten by DOM mutations
           transform: restTransform,
           cursor: 'default',
-          overflow: 'visible',
-          // Subtle floating shadow applied directly on the card element
-          boxShadow: '0 4px 14px rgba(0,0,0,0.10), 0 14px 36px rgba(0,0,0,0.12)',
         } as any,
+        style,
       ]}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}

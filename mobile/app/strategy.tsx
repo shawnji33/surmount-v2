@@ -584,9 +584,9 @@ function ShareModal({ onDismiss }: { onDismiss: () => void }) {
         keyboardShouldPersistTaps="handled"
       >
         <TiltCard
-          style={{ backgroundColor: 'transparent' } as any}
+          style={{ backgroundColor: 'transparent', borderRadius: 12, overflow: 'hidden' } as any}
           maxTilt={7} scaleOnHover={1.012} perspective={1100}
-          trackDuration={120} resetDuration={600} shine parallaxDepth={0}
+          trackDuration={120} resetDuration={600} shine={false} parallaxDepth={0}
         >
           <ShareCardPreview take={take} />
         </TiltCard>
