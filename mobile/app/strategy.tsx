@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { motion } from 'motion/react';
 import { useRouter } from 'expo-router';
+import { TiltCard } from '../components/TiltCard';
 
 // ─── Assets ───────────────────────────────────────────────────────────────────
 const BASE = 'assets';
@@ -28,6 +29,18 @@ const Avatars = {
   brokerSchwab:    u('avatars/broker-schwab.png'),
   activityGoogl:   u('avatars/activity-googl.png'),
   activityVisa:    u('avatars/activity-visa.png'),
+};
+
+const ShareCard = {
+  bg:         u('share-cards/bg-quantum.png'),
+  logoG0:     u('share-cards/logo-g0.png'),
+  logoG1:     u('share-cards/logo-g1.png'),
+  logoG2:     u('share-cards/logo-g2.png'),
+  logoG3:     u('share-cards/logo-g3.png'),
+  avatarGoog: u('share-cards/avatar-goog.png'),
+  avatarHood: u('share-cards/avatar-robinhood.png'),
+  avatarAmd:  u('share-cards/avatar-amd.png'),
+  dot:        u('share-cards/dot-green.png'),
 };
 
 // ─── Img primitive ─────────────────────────────────────────────────────────────
@@ -398,22 +411,34 @@ function ActionBtn({ icon, label, onPress, active }: { icon: 'share'|'link'|'dow
   );
 }
 
-function ShareCardChart() {
+// ─── Surmount logo helpers (4-part assembly) ──────────────────────────────────
+function SurmountLogoImage({ width = 39, height = 24 }: { width?: number; height?: number }) {
   return (
-    <View style={{ width: 350, height: 180, overflow: 'hidden' }}>
+    <View style={{ width, height, position: 'relative', overflow: 'visible' }}>
       {/* @ts-ignore */}
-      <svg width="350" height="180" viewBox="0 0 350 180" fill="none" style={{ display: 'block' }}>
-        {/* @ts-ignore */}
-        <path d="M 0 155 C 40 148 65 134 95 122 S 145 102 175 92 S 225 72 265 57 S 315 42 350 32 L 350 180 L 0 180 Z" fill="rgba(45,110,49,0.22)" />
-        {/* @ts-ignore */}
-        <path d="M 0 155 C 40 148 65 134 95 122 S 145 102 175 92 S 225 72 265 57 S 315 42 350 32" stroke="#2d6e31" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-        {/* @ts-ignore */}
-        <circle cx="350" cy="32" r="6" fill="rgba(45,110,49,0.22)" />
-        {/* @ts-ignore */}
-        <circle cx="350" cy="32" r="3.5" fill="#ffffff" />
-        {/* @ts-ignore */}
-        <circle cx="350" cy="32" r="2" fill="#2d6e31" />
-      </svg>
+      <img src={ShareCard.logoG0.uri} alt="" style={{ position: 'absolute', top: 0, left: 0, right: '50%', bottom: '50.01%', objectFit: 'fill' }} />
+      {/* @ts-ignore */}
+      <img src={ShareCard.logoG1.uri} alt="" style={{ position: 'absolute', top: '39.12%', right: '26.26%', bottom: '0.02%', left: 0, objectFit: 'fill' }} />
+      {/* @ts-ignore */}
+      <img src={ShareCard.logoG2.uri} alt="" style={{ position: 'absolute', top: '0.02%', right: 0, bottom: '39.13%', left: '26.25%', objectFit: 'fill' }} />
+      {/* @ts-ignore */}
+      <img src={ShareCard.logoG3.uri} alt="" style={{ position: 'absolute', top: '49.99%', right: 0, bottom: 0, left: '50.01%', objectFit: 'fill' }} />
+    </View>
+  );
+}
+
+function SurmountLogoMark() {
+  return (
+    <View style={{
+      width: 20, height: 20, borderRadius: 4, overflow: 'hidden', position: 'relative',
+      borderWidth: 0.2, borderColor: 'rgba(255,255,255,0.1)',
+      boxShadow: '0px 1px 1px -0.5px rgba(10,13,18,0.13), 0px 1px 3px 0px rgba(10,13,18,0.1), 0px 1px 2px 0px rgba(10,13,18,0.06)',
+    } as any}>
+      <View style={[StyleSheet.absoluteFillObject, { backgroundImage: 'linear-gradient(135deg, rgb(245,247,250) 0%, rgb(195,207,226) 100%)' } as any]} />
+      <View style={{ ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center' }}>
+        <SurmountLogoImage width={14} height={8} />
+      </View>
+      <View style={[StyleSheet.absoluteFillObject, { borderRadius: 4, boxShadow: 'inset 0px -0.5px 0.5px 0px rgba(10,13,18,0.1)' } as any]} pointerEvents="none" />
     </View>
   );
 }
@@ -421,32 +446,90 @@ function ShareCardChart() {
 function ShareCardPreview({ take }: { take: string }) {
   return (
     <View style={sc.cardOuter}>
-      <View style={[StyleSheet.absoluteFillObject, { backgroundColor: '#2f1b00' }]} />
-      <View style={[StyleSheet.absoluteFillObject, { backgroundImage: 'linear-gradient(to bottom, rgba(47,27,0,0) 20%, rgba(47,27,0,0.97) 100%)' } as any]} />
-      {/* Top bar */}
-      <View style={sc.topBar}>
-        <View style={sc.sMark}>
-          <T style={sc.sMarkTxt}>S</T>
-        </View>
-        <View style={sc.returnBadge}>
-          <T style={sc.returnBadgeTxt}>+8.50% / year</T>
-        </View>
+      {/* Background: city photo + bottom gradient */}
+      <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
+        <Img source={ShareCard.bg} style={StyleSheet.absoluteFillObject} contentFit="cover" />
+        <View style={[StyleSheet.absoluteFillObject, {
+          backgroundImage: 'linear-gradient(to bottom, rgba(47,27,0,0) 40%, rgba(47,27,0,0.95) 100%)',
+        } as any]} />
       </View>
-      {/* Chart */}
-      <View style={sc.chartArea}>
-        <ShareCardChart />
-      </View>
-      {/* Bottom content */}
-      <View style={sc.bottomContent}>
+      {/* Side vignette */}
+      <View style={[StyleSheet.absoluteFillObject, {
+        backgroundImage: 'linear-gradient(to bottom, rgba(75,65,57,0) 45.816%, rgba(75,65,57,0.4) 78.326%, rgba(56,41,24,0.6) 100%)',
+      } as any]} pointerEvents="none" />
+
+      {/* Content — pushed to bottom */}
+      <View style={{ flex: 1, justifyContent: 'flex-end', padding: 20, gap: 20 }}>
+
+        {/* Title */}
         <T style={sc.cardTitle}>Quantum Computing Leaders</T>
-        <T style={sc.cardDesc} numberOfLines={2}>A concentrated portfolio of companies at the forefront of quantum computing hardware and software.</T>
         {take.trim() ? <T style={sc.cardTake}>"{take.trim()}"</T> : null}
-        <View style={sc.statsRow}>
-          <Text style={sc.statValue}>$96,622.77</Text>
-          <T style={sc.gainTxt}>+$2.25 (+0.56%)</T>
+
+        {/* Stats row: frosted glass, 3 cols */}
+        <View style={[sc.statsRow, { backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' } as any]}>
+          <View style={sc.statCol}>
+            <T style={sc.statGreen}>+6.5%</T>
+            <T style={sc.statLabel}>1-year</T>
+          </View>
+          <View style={sc.statDivider} />
+          <View style={sc.statCol}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <Img source={ShareCard.dot} style={{ width: 6, height: 6 }} contentFit="contain" />
+              <T style={sc.statWhite}>Low</T>
+            </View>
+            <T style={sc.statLabel}>Risk</T>
+          </View>
+          <View style={sc.statDivider} />
+          <View style={sc.statCol}>
+            <T style={sc.statWhite}>Utilities</T>
+            <T style={sc.statLabel}>Sector</T>
+          </View>
         </View>
-        <View style={sc.divider} />
-        <T style={sc.footerTxt}>Shared via Surmount · Maya</T>
+
+        {/* Holdings bars */}
+        <View style={{ gap: 8 }}>
+          <T style={sc.holdingsLabel}>Top holdings</T>
+          {/* GOOG — full width */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            <View style={sc.tickerCol}>
+              <T style={sc.tickerName}>GOOG</T>
+              <T style={sc.tickerPct}>25%</T>
+            </View>
+            <View style={[sc.bar, { flex: 1, backgroundColor: 'rgba(255,255,255,0.6)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' } as any]}>
+              <View style={sc.barAvatarWrap}><Img source={ShareCard.avatarGoog} style={sc.barAvatar} contentFit="cover" /></View>
+            </View>
+          </View>
+          {/* HOOD — 191px */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            <View style={sc.tickerCol}>
+              <T style={sc.tickerName}>HOOD</T>
+              <T style={sc.tickerPct}>20%</T>
+            </View>
+            <View style={[sc.bar, { width: 191, backgroundColor: 'rgba(204,255,0,0.6)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' } as any]}>
+              <View style={sc.barAvatarWrap}><Img source={ShareCard.avatarHood} style={sc.barAvatar} contentFit="cover" /></View>
+            </View>
+          </View>
+          {/* AMD — 141px */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            <View style={sc.tickerCol}>
+              <T style={sc.tickerName}>AMD</T>
+              <T style={sc.tickerPct}>15%</T>
+            </View>
+            <View style={[sc.bar, { width: 141, backgroundColor: 'rgba(31,33,34,0.6)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' } as any]}>
+              <View style={sc.barAvatarWrap}><Img source={ShareCard.avatarAmd} style={sc.barAvatar} contentFit="cover" /></View>
+            </View>
+          </View>
+        </View>
+
+        {/* Footer */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <T style={sc.footerSharedVia}>Shared via</T>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <SurmountLogoMark />
+            <T style={sc.footerBrand}>Surmount</T>
+          </View>
+        </View>
+
       </View>
     </View>
   );
@@ -484,7 +567,9 @@ function ShareModal({ onDismiss }: { onDismiss: () => void }) {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        <ShareCardPreview take={take} />
+        <TiltCard maxTilt={7} scaleOnHover={1.012} perspective={1100} trackDuration={120} resetDuration={600} shine parallaxDepth={0}>
+          <ShareCardPreview take={take} />
+        </TiltCard>
         <View style={sm.takeRow}>
           <TextInput
             style={sm.takeInput}
@@ -1055,39 +1140,38 @@ const sm = StyleSheet.create({
 // ─── Share card styles ────────────────────────────────────────────────────────
 const sc = StyleSheet.create({
   cardOuter: {
-    width: 350, height: 560, borderRadius: 16, overflow: 'hidden', position: 'relative',
+    width: 350, height: 560, borderRadius: 12, overflow: 'hidden', position: 'relative',
+    flexDirection: 'column', justifyContent: 'flex-end',
+    borderWidth: 1, borderColor: 'rgba(34,38,47,0.2)',
   },
-  topBar: {
-    position: 'absolute', top: 0, left: 0, right: 0, zIndex: 2,
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    padding: 20,
+  // Title
+  cardTitle: {
+    fontFamily: 'Geist', fontSize: 28, fontWeight: '500',
+    color: 'rgba(255,255,255,0.89)', lineHeight: 32, letterSpacing: -0.75,
+    width: 320,
   },
-  sMark: {
-    width: 32, height: 32, borderRadius: 8,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    alignItems: 'center', justifyContent: 'center',
-    borderWidth: 0.5, borderColor: 'rgba(255,255,255,0.25)',
+  cardTake: { fontSize: 12, fontWeight: '400', color: 'rgba(255,255,255,0.75)', lineHeight: 18, fontStyle: 'italic' },
+  // Stats row
+  statsRow: {
+    flexDirection: 'row', alignItems: 'center', overflow: 'hidden',
+    borderRadius: 8, borderWidth: 1, borderColor: 'rgba(255,255,255,0.12)',
+    backgroundColor: 'rgba(255,255,255,0.10)',
+    paddingHorizontal: 16, paddingVertical: 12,
   },
-  sMarkTxt: { fontSize: 16, fontWeight: '500', color: '#ffffff' },
-  returnBadge: {
-    borderRadius: 9999, paddingHorizontal: 10, paddingVertical: 4,
-    backgroundColor: 'rgba(59,126,63,0.25)',
-    borderWidth: 0.5, borderColor: 'rgba(59,126,63,0.50)',
-  },
-  returnBadgeTxt: { fontSize: 12, fontWeight: '500', color: '#72be7c' },
-  chartArea: {
-    position: 'absolute', left: 0, right: 0, top: 120,
-  },
-  bottomContent: {
-    position: 'absolute', bottom: 0, left: 0, right: 0,
-    padding: 24, gap: 8,
-  },
-  cardTitle: { fontSize: 20, fontWeight: '500', color: '#ffffff', lineHeight: 28 },
-  cardDesc: { fontSize: 12, color: 'rgba(255,255,255,0.65)', lineHeight: 18 },
-  cardTake: { fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 18, fontStyle: 'italic', marginTop: 4 },
-  statsRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 4 },
-  statValue: { fontFamily: 'Inter', fontSize: 24, fontWeight: '500', color: '#ffffff' },
-  gainTxt: { fontSize: 14, fontWeight: '500', color: '#72be7c', lineHeight: 20 },
-  divider: { height: 0.5, backgroundColor: 'rgba(255,255,255,0.15)', marginVertical: 4 },
-  footerTxt: { fontSize: 12, color: 'rgba(255,255,255,0.45)' },
+  statCol: { flex: 1, flexDirection: 'column', alignItems: 'center', gap: 2, overflow: 'hidden' },
+  statGreen:  { fontSize: 14, fontWeight: '500', color: '#71b775', lineHeight: 20 },
+  statWhite:  { fontSize: 14, fontWeight: '500', color: 'rgba(255,255,255,0.9)', lineHeight: 20 },
+  statLabel:  { fontSize: 12, fontWeight: '500', color: 'rgba(255,255,255,0.6)', lineHeight: 16 },
+  statDivider:{ width: 1, height: 28, backgroundColor: 'rgba(255,255,255,0.2)', flexShrink: 0 },
+  // Holdings
+  holdingsLabel: { fontSize: 12, fontWeight: '500', color: 'rgba(255,255,255,0.7)', lineHeight: 18 },
+  tickerCol: { width: 42, flexDirection: 'column', alignItems: 'flex-start', flexShrink: 0 },
+  tickerName: { fontSize: 12, fontWeight: '500', color: 'rgba(255,255,255,0.9)', lineHeight: 18 },
+  tickerPct:  { fontSize: 12, fontWeight: '500', color: 'rgba(255,255,255,0.6)', lineHeight: 18 },
+  bar: { height: 40, borderRadius: 10, overflow: 'hidden', position: 'relative', flexShrink: 0 },
+  barAvatarWrap: { position: 'absolute', left: 12, top: 8, bottom: 8, flexDirection: 'row', alignItems: 'center', gap: 8 },
+  barAvatar: { width: 24, height: 24, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', flexShrink: 0 },
+  // Footer
+  footerSharedVia: { fontSize: 12, fontWeight: '500', color: 'rgba(255,255,255,0.4)', lineHeight: 16 },
+  footerBrand: { fontFamily: 'Inter', fontSize: 12, fontWeight: '500', color: 'rgba(255,255,255,0.7)', letterSpacing: -0.8, lineHeight: 18 },
 });
