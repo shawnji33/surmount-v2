@@ -654,10 +654,10 @@ export default function StrategyScreen() {
 
         {/* ── Hero card ── */}
         <View style={s.heroCard}>
-          {/* Base color layer */}
-          <View style={[StyleSheet.absoluteFillObject, { backgroundColor: '#2f1b00' } as any]} />
-          {/* Warm brown gradient overlay — matches Figma from-[rgba(47,27,0,0)] to-[rgba(47,27,0,0.95)] */}
-          <View style={[StyleSheet.absoluteFillObject, { backgroundImage: 'linear-gradient(to bottom, rgba(47,27,0,0) 6%, rgba(47,27,0,0.95) 100%)' } as any]} />
+          {/* Strategy cover image */}
+          <Img source={u('strategy-covers/Quantum Computing Leaders.png')} style={StyleSheet.absoluteFillObject} contentFit="cover" />
+          {/* Gradient scrim so title stays readable */}
+          <View style={[StyleSheet.absoluteFillObject, { backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0) 20%, rgba(0,0,0,0.75) 100%)' } as any]} />
           {/* Title + description */}
           <View style={s.heroContent}>
             <T style={s.heroTitle}>Quantum Computing Leaders</T>
