@@ -11,7 +11,7 @@ import {
   Image,
   type ViewStyle,
 } from 'react-native';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useRouter } from 'expo-router';
 import { TiltCard } from '../components/TiltCard';
 
@@ -576,6 +576,22 @@ function ShareModal({ onDismiss }: { onDismiss: () => void }) {
   }
 
   return (
+    // @ts-ignore
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.18 }}
+      style={{ position: 'absolute', inset: 0, zIndex: 200, display: 'flex', flexDirection: 'column' }}
+    >
+    {/* @ts-ignore */}
+    <motion.div
+      initial={{ y: '100%' }}
+      animate={{ y: 0 }}
+      exit={{ y: '100%' }}
+      transition={{ type: 'spring', stiffness: 380, damping: 36, mass: 1 }}
+      style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+    >
     <View style={sm.overlay}>
       <View style={[StyleSheet.absoluteFillObject, sm.warmBg] as any} pointerEvents="none" />
       <View style={s.statusSpacer} />
@@ -617,6 +633,10 @@ function ShareModal({ onDismiss }: { onDismiss: () => void }) {
         </View>
       </ScrollView>
     </View>
+    {/* @ts-ignore */}
+    </motion.div>
+    {/* @ts-ignore */}
+    </motion.div>
   );
 }
 
@@ -986,7 +1006,10 @@ export default function StrategyScreen() {
         </View>
       </View>
 
-      {showShare && <ShareModal onDismiss={() => setShowShare(false)} />}
+      {/* @ts-ignore */}
+      <AnimatePresence>
+        {showShare && <ShareModal key="share-modal" onDismiss={() => setShowShare(false)} />}
+      </AnimatePresence>
 
     </View>
     {/* @ts-ignore */}
