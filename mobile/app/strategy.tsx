@@ -8,6 +8,7 @@ import {
   Platform,
   Animated,
   TextInput,
+  Image,
   type ViewStyle,
 } from 'react-native';
 import { motion } from 'motion/react';
@@ -17,6 +18,9 @@ import { TiltCard } from '../components/TiltCard';
 // ─── Assets ───────────────────────────────────────────────────────────────────
 const BASE = 'assets';
 const u = (path: string) => ({ uri: `${BASE}/${path}` });
+
+// Required images (bundled by Metro — work in dev + prod)
+const QuantumCoverImg = require('../assets/strategy-covers/Quantum Computing Leaders.png');
 
 const Icons = {
   caretDown:  u('icons/phosphor/caret-down.svg'),
@@ -60,8 +64,12 @@ const ShareCard = {
 };
 
 // ─── Img primitive ─────────────────────────────────────────────────────────────
-type ImgProps = { source: { uri: string }; style?: ViewStyle | any; contentFit?: 'cover' | 'contain' | 'fill' };
+type ImgProps = { source: { uri: string } | number; style?: ViewStyle | any; contentFit?: 'cover' | 'contain' | 'fill' };
 function Img({ source, style, contentFit = 'cover' }: ImgProps) {
+  if (typeof source === 'number') {
+    const rmMap = { cover: 'cover', contain: 'contain', fill: 'stretch' } as const;
+    return <Image source={source} style={style} resizeMode={rmMap[contentFit]} />;
+  }
   const bsMap = { cover: 'cover', contain: 'contain', fill: '100% 100%' };
   return (
     <View style={[style, {
@@ -655,7 +663,7 @@ export default function StrategyScreen() {
         {/* ── Hero card ── */}
         <View style={s.heroCard}>
           {/* Strategy cover image */}
-          <Img source={u('strategy-covers/Quantum Computing Leaders.png')} style={StyleSheet.absoluteFillObject} contentFit="cover" />
+          <Img source={QuantumCoverImg} style={StyleSheet.absoluteFillObject} contentFit="cover" />
           {/* Gradient scrim so title stays readable */}
           <View style={[StyleSheet.absoluteFillObject, { backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0) 20%, rgba(0,0,0,0.75) 100%)' } as any]} />
           {/* Title + description */}
