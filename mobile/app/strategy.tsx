@@ -631,6 +631,13 @@ export default function StrategyScreen() {
   const [showShare, setShowShare] = useState(false);
 
   return (
+    // @ts-ignore
+    <motion.div
+      initial={{ opacity: 0, y: 32 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: 'spring', stiffness: 340, damping: 32, mass: 0.9 }}
+      style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', backgroundColor: '#ffffff' }}
+    >
     <View style={s.root}>
 
       {/* ── Fixed header — individual Liquid Glass containers ── */}
@@ -661,6 +668,8 @@ export default function StrategyScreen() {
       >
 
         {/* ── Hero card ── */}
+        {/* @ts-ignore */}
+        <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 28, delay: 0.05 }} style={{ borderRadius: 8, overflow: 'hidden' }}>
         <View style={s.heroCard}>
           {/* Strategy cover image */}
           <Img source={QuantumCoverImg} style={StyleSheet.absoluteFillObject} contentFit="cover" />
@@ -672,8 +681,12 @@ export default function StrategyScreen() {
             <T style={s.heroDesc}>A concentrated portfolio of companies at the forefront of quantum computing hardware and software.</T>
           </View>
         </View>
+        {/* @ts-ignore */}
+        </motion.div>
 
         {/* ── Stats pills ── */}
+        {/* @ts-ignore */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', stiffness: 300, damping: 28, delay: 0.1 }}>
         <View style={s.pillsGrid}>
           {/* Row 1: Top Industry | 1-Year Return | Risk */}
           <View style={s.pillsRow}>
@@ -711,8 +724,12 @@ export default function StrategyScreen() {
             </View>
           </View>
         </View>
+        {/* @ts-ignore */}
+        </motion.div>
 
         {/* ── Portfolio value + chart + period bar (full-bleed gray bg) ── */}
+        {/* @ts-ignore */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', stiffness: 280, damping: 28, delay: 0.15 }}>
         <View style={s.chartSection}>
           <View style={s.valueBlock}>
             <Text style={s.valueFull}>$96,622.77</Text>
@@ -738,8 +755,12 @@ export default function StrategyScreen() {
             ))}
           </View>
         </View>
+        {/* @ts-ignore */}
+        </motion.div>
 
         {/* ── Metrics grid — 2-col plain text, no card border ── */}
+        {/* @ts-ignore */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', stiffness: 260, damping: 28, delay: 0.2 }}>
         <View style={{ flexDirection: 'row', gap: 20, marginTop: 32 }}>
           <View style={{ flex: 1, gap: 12 }}>
             {METRICS_LEFT.map(item => (
@@ -758,8 +779,12 @@ export default function StrategyScreen() {
             ))}
           </View>
         </View>
+        {/* @ts-ignore */}
+        </motion.div>
 
         {/* ── Your position ── */}
+        {/* @ts-ignore */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', stiffness: 240, damping: 28, delay: 0.25 }}>
         <View style={s.section}>
           <T style={s.sectionTitle}>Your position</T>
           <View style={s.posCard}>
@@ -794,8 +819,12 @@ export default function StrategyScreen() {
             </SpringPressable>
           </View>
         </View>
+        {/* @ts-ignore */}
+        </motion.div>
 
         {/* ── Top holdings ── */}
+        {/* @ts-ignore */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', stiffness: 220, damping: 28, delay: 0.3 }}>
         <View style={s.section}>
           <T style={s.sectionTitle}>Top holdings</T>
           <View style={{ gap: 8 }}>
@@ -822,8 +851,12 @@ export default function StrategyScreen() {
             ))}
           </View>
         </View>
+        {/* @ts-ignore */}
+        </motion.div>
 
         {/* ── Industries ── */}
+        {/* @ts-ignore */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', stiffness: 200, damping: 28, delay: 0.32 }}>
         <View style={s.section}>
           <T style={s.sectionTitle}>Industries</T>
           <View style={{ gap: 20 }}>
@@ -849,8 +882,12 @@ export default function StrategyScreen() {
             </View>
           </View>
         </View>
+        {/* @ts-ignore */}
+        </motion.div>
 
         {/* ── Recent transactions ── */}
+        {/* @ts-ignore */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', stiffness: 200, damping: 28, delay: 0.35 }}>
         <View style={s.section}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             <T style={s.sectionTitle}>Recent transactions</T>
@@ -920,6 +957,8 @@ export default function StrategyScreen() {
             ))}
           </ScrollView>
         </View>
+        {/* @ts-ignore */}
+        </motion.div>
 
       </ScrollView>
 
@@ -950,6 +989,8 @@ export default function StrategyScreen() {
       {showShare && <ShareModal onDismiss={() => setShowShare(false)} />}
 
     </View>
+    {/* @ts-ignore */}
+    </motion.div>
   );
 }
 
