@@ -420,17 +420,17 @@ function DownloadIcon() {
   );
 }
 
-function ActionBtn({ icon, label, onPress, active }: { icon: 'share'|'link'|'download'; label: string; onPress?: () => void; active?: boolean }) {
+function ActionBtn({ icon, label, onPress }: { icon: 'share'|'link'|'download'; label: string; onPress?: () => void }) {
   const Icon = icon === 'share' ? UploadIcon : icon === 'link' ? LinkIcon : DownloadIcon;
   return (
     <SpringPressable
-      style={[sm.actionBtn, active && sm.actionBtnActive]}
+      style={sm.actionBtn}
       scaleTo={0.94}
       onPress={onPress}
       wrapStyle={{ flex: 1 }}
     >
       <Icon />
-      <T style={[sm.actionLabel, active && sm.actionLabelActive]}>{label}</T>
+      <T style={sm.actionLabel}>{label}</T>
     </SpringPressable>
   );
 }
@@ -562,17 +562,14 @@ function ShareCardPreview({ take }: { take: string }) {
 function ShareModal({ onDismiss }: { onDismiss: () => void }) {
   const [take, setTake] = useState('');
   const [copied, setCopied] = useState(false);
-  const [shared, setShared] = useState(false);
   const MAX = 60;
 
   function handleCopy() {
     if (typeof navigator !== 'undefined') {
       navigator.clipboard?.writeText('https://surmount.app/s/quantum-computing-leaders?sharedBy=Maya');
     }
-    setCopied(true); setTimeout(() => setCopied(false), 2000);
-  }
-  function handleShare() {
-    setShared(true); setTimeout(() => setShared(false), 1500);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 3000);
   }
 
   return (
@@ -627,11 +624,43 @@ function ShareModal({ onDismiss }: { onDismiss: () => void }) {
           </T>
         </View>
         <View style={sm.actionRow}>
-          <ActionBtn icon="share" label={shared ? 'Shared!' : 'Share'} onPress={handleShare} active={shared} />
-          <ActionBtn icon="link" label={copied ? 'Copied!' : 'Copy link'} onPress={handleCopy} active={copied} />
+          <ActionBtn icon="share" label="Share" />
+          <ActionBtn icon="link" label="Copy link" onPress={handleCopy} />
           <ActionBtn icon="download" label="Download" />
         </View>
       </ScrollView>
+
+      {/* ── Copy-link toast — slides down from top ── */}
+      {/* @ts-ignore */}
+      <AnimatePresence>
+        {copied && (
+          // @ts-ignore
+          <motion.div
+            key="copy-toast"
+            initial={{ opacity: 0, y: -64, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -64, scale: 0.95 }}
+            transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+            style={{
+              position: 'absolute',
+              top: 68,
+              left: 0,
+              right: 0,
+              alignItems: 'center',
+              display: 'flex',
+              justifyContent: 'center',
+              zIndex: 10,
+              pointerEvents: 'none',
+            }}
+          >
+            <View style={sm.toast}>
+              {/* Success dot */}
+              <View style={sm.toastDot} />
+              <T style={sm.toastTxt}>Link copied to clipboard</T>
+            </View>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </View>
     {/* @ts-ignore */}
     </motion.div>
@@ -1195,9 +1224,16 @@ const sm = StyleSheet.create({
     borderRadius: 10, borderWidth: 1, borderColor: 'rgba(0,0,0,0.04)',
     alignItems: 'center', justifyContent: 'center', gap: 8, overflow: 'hidden',
   },
-  actionBtnActive: { backgroundColor: 'rgba(64,106,208,0.10)', borderColor: 'rgba(64,106,208,0.20)' },
   actionLabel: { fontSize: 12, color: 'rgba(10,13,18,0.9)', textAlign: 'center' },
-  actionLabelActive: { color: '#406AD0', fontWeight: '500' },
+  toast: {
+    flexDirection: 'row', alignItems: 'center', gap: 8,
+    backgroundColor: '#ffffff',
+    borderRadius: 20, paddingHorizontal: 16, paddingVertical: 10,
+    borderWidth: 1, borderColor: 'rgba(0,0,0,0.08)',
+    boxShadow: '0 4px 16px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06)',
+  } as any,
+  toastDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#3b7e3f' },
+  toastTxt: { fontSize: 14, fontWeight: '500', color: '#181d27', lineHeight: 20 },
 });
 
 // ─── Share card styles ────────────────────────────────────────────────────────
